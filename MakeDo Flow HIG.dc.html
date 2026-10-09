@@ -62,24 +62,28 @@ a{color:#C0522C}a:hover{color:#9C3F20}
     </sc-if>
     <sc-if value="{{ notHomeEditor }}">
       <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Back</button>
-      <span style="font:400 12px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ stepLabel }}</span>
     </sc-if>
   </div>
-  <div style="padding:10px 20px 0">
+  <sc-if value="{{ showProg }}">
+  <div style="padding:6px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+  <div style="padding:14px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16;text-wrap:pretty"><sc-if value="{{ isHomeEditor }}" hint-placeholder-val="{{ true }}">Your ingredients.<br>Your time.<br><em style="font-style:normal;color:#C0522C">Your dinner.</em></sc-if><sc-if value="{{ notHomeEditor }}">{{ editorTitle }}</sc-if></h1>
     <p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;text-wrap:pretty">{{ editorSub }}</p>
   </div>
-  <div style="padding:18px 20px 0">
-    <div style="display:flex;align-items:center;gap:6px;background:rgba(118,100,86,.12);border-radius:10px;padding:0 10px;height:40px">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6259" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-      <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search all ingredients" style="flex:1;min-width:0;border:0;background:transparent;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;height:100%">
-      <sc-if value="{{ hasQuery }}"><button onClick="{{ clearQuery }}" style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;padding:8px 0 8px 6px">Clear</button></sc-if>
-    </div>
-  </div>
-  <div style="padding:14px 20px 0">
+  <div style="padding:16px 20px 0">
     <div style="background:#FAF1E6;border-radius:16px;padding:14px 14px 15px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
-        <span style="font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Your ingredients</span>
+        <span style="font:600 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Your ingredients</span>
         <span style="font:400 12px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ selCountLabel }}</span>
       </div>
       <sc-if value="{{ hasSelected }}">
@@ -90,16 +94,48 @@ a{color:#C0522C}a:hover{color:#9C3F20}
         </div>
       </sc-if>
       <sc-if value="{{ noSelected }}">
-        <div style="font:400 15px/1.45 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">Nothing yet. Flip through the tabs below or search.</div>
+        <div style="font:400 15px/1.45 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">Nothing yet. Pick a tab below or search.</div>
       </sc-if>
     </div>
   </div>
+  <div style="padding:24px 20px 0">
+    <div style="font:600 17px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">What ingredients do you have?</div>
+    <div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin-top:3px">Pick a tab, then tap what's in your kitchen.</div>
+    <div role="tablist" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end;margin-top:14px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+        <button onClick="{{ c.onToggle }}" role="tab" aria-selected="{{ c.open }}" aria-label="{{ c.name }}" title="{{ c.name }}" style="position:relative;display:flex;align-items:center;justify-content:center;height:{{ c.h }}px;border-radius:12px 12px 0 0;transition:height .18s ease,background .18s ease;background:{{ c.tabBg }};color:{{ c.fg }};border:1px solid {{ c.bd }};border-bottom:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ c.icon }}"></path></svg>
+          <sc-if value="{{ c.hasCount }}"><span style="position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#C0522C;color:#FFF7F0;font:600 10px/16px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">{{ c.count }}</span></sc-if>
+        </button>
+      </sc-for>
+    </div>
+    <div style="position:relative;background:{{ activeTint }};border-radius:{{ panelRadius }};padding:16px 16px 20px;min-height:170px;box-shadow:0 8px 18px rgba(35,28,22,.07)">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <span style="font:600 20px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ activeName }}</span>
+        <span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#5E5249">{{ activeCountLabel }}</span>
+      </div>
+      <div style="height:0;border-top:1px dashed rgba(35,28,22,.22);margin:12px 0 14px"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;animation:dfade .2s ease both">
+        <sc-for list="{{ activeItems }}" as="i" hint-placeholder-count="8">
+          <button onClick="{{ i.onPick }}" style="padding:0 14px;border-radius:100px;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:all .16s ease;border:1.5px solid {{ i.bd }};background:{{ i.bg }};color:{{ i.fg }}">{{ i.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  <div style="padding:18px 20px 0">
+    <div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin-bottom:8px">Can't find it? Search everything.</div>
+    <div style="display:flex;align-items:center;gap:6px;background:rgba(118,100,86,.12);border-radius:10px;padding:0 10px;height:40px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6259" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search all ingredients" style="flex:1;min-width:0;border:0;background:transparent;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;height:100%">
+      <sc-if value="{{ hasQuery }}"><button onClick="{{ clearQuery }}" style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;padding:0 0 0 6px">Clear</button></sc-if>
+    </div>
+  </div>
   <sc-if value="{{ hasQuery }}">
-    <div style="padding:18px 20px 0">
-      <div style="font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin-bottom:10px">{{ resultsLabel }}</div>
+    <div style="padding:14px 20px 0">
+      <div style="font:600 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin-bottom:10px">{{ resultsLabel }}</div>
       <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
         <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="4">
-          <button onClick="{{ r.onToggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(35,28,22,.06);min-height:56px">
+          <button onClick="{{ r.onToggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(35,28,22,.06);min-height:56px">
             <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px"><span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ r.name }}</span><span style="font:400 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ r.cat }}</span></span>
             <span style="padding:8px 12px;border-radius:100px;font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;background:{{ r.pillBg }};color:{{ r.pillFg }}">{{ r.action }}</span>
           </button>
@@ -108,29 +144,6 @@ a{color:#C0522C}a:hover{color:#9C3F20}
       <sc-if value="{{ noResults }}">
         <div style="font:400 15px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;padding:6px 2px">No ingredients match. Try a shorter word.</div>
       </sc-if>
-    </div>
-  </sc-if>
-  <sc-if value="{{ noQuery }}">
-    <div style="padding:24px 20px 0">
-      <div style="font:600 17px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">What ingredients do you have?</div>
-      <div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin-top:3px">Flip through the tabs and tap what's in your kitchen.</div>
-      <div style="display:flex;align-items:flex-end;gap:3px;overflow-x:auto;scrollbar-width:none;margin-top:14px;padding-top:4px">
-        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
-          <button onClick="{{ c.onToggle }}" aria-pressed="{{ c.open }}" style="flex:none;display:flex;align-items:center;gap:6px;height:{{ c.h }}px;padding:0 13px;border-radius:12px 12px 0 0;font:{{ c.weight }} 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;transition:height .18s ease,background .18s ease;background:{{ c.tabBg }};box-shadow:{{ c.shadow }}">{{ c.short }}<sc-if value="{{ c.hasCount }}"><span style="min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#231C16;color:#FDFAF6;font:600 12px/20px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">{{ c.count }}</span></sc-if></button>
-        </sc-for>
-      </div>
-      <div style="position:relative;background:{{ activeTint }};border-radius:{{ panelRadius }};padding:18px 16px 20px;min-height:180px;box-shadow:0 8px 18px rgba(35,28,22,.07)">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
-          <span style="font:600 20px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ activeName }}</span>
-          <span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#5E5249">{{ activeCountLabel }}</span>
-        </div>
-        <div style="height:0;border-top:1px dashed rgba(35,28,22,.22);margin:12px 0 14px"></div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;animation:dfade .2s ease both">
-          <sc-for list="{{ activeItems }}" as="i" hint-placeholder-count="8">
-            <button onClick="{{ i.onPick }}" style="padding:0 14px;border-radius:100px;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:all .16s ease;border:1.5px solid {{ i.bd }};background:{{ i.bg }};color:{{ i.fg }}">{{ i.label }}</button>
-          </sc-for>
-        </div>
-      </div>
     </div>
   </sc-if>
   <sc-if value="{{ showEditorTime }}">
@@ -148,63 +161,23 @@ a{color:#C0522C}a:hover{color:#9C3F20}
 </div>
 </sc-if>
 
-<sc-if value="{{ sStaples }}">
-<div data-screen-label="Basics" style="animation:dfade .3s ease both;padding:0 0 200px">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
-    <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Back</button>
-    <span style="font:400 12px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ stepLabel }}</span>
-  </div>
-  <div style="padding:10px 20px 0">
-    <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">Have these basics?</h1>
-    <p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;text-wrap:pretty">Most recipes lean on them. Check only what's in your kitchen right now.</p>
-  </div>
-  <div style="padding:18px 20px 0">
-    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:14px;overflow:hidden">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(35,28,22,.07);background:#FBF6EF">
-        <span style="font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Basics</span>
-        <button onClick="{{ onSelectAll }}" style="font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C;padding:8px 0">{{ selectAllLabel }}</button>
-      </div>
-      <sc-for list="{{ stapleRows }}" as="r" hint-placeholder-count="3">
-        <button onClick="{{ r.onToggle }}" style="width:100%;display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid rgba(35,28,22,.06);text-align:left;min-height:62px">
-          <span style="width:24px;height:24px;flex:none;border-radius:7px;font:600 15px/22px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center;transition:all .15s ease;background:{{ r.boxBg }};border:1.5px solid {{ r.boxBd }};color:#FDFAF6">{{ r.mark }}</span>
-          <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;gap:2px"><span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ r.name }}</span><span style="font:400 13px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ r.note }}</span></span>
-        </button>
-      </sc-for>
-    </div>
-  </div>
-  <sc-if value="{{ anyStaple }}">
-    <div style="padding:14px 20px 0;animation:dfade .25s ease both">
-      <div style="background:#FFFFFF;border:1px dashed rgba(35,28,22,.22);border-radius:14px">
-        <button onClick="{{ toggleSeason }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 16px;min-height:62px">
-          <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px"><span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">Add seasonings</span><span style="font:400 13px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ seasonSubLabel }}</span></span>
-          <span style="padding:8px 12px;border-radius:100px;border:1px solid rgba(35,28,22,.16);font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ seasonToggleLabel }}</span>
-        </button>
-        <sc-if value="{{ seasonOpen }}">
-          <div style="padding:0 16px 16px;animation:dfade .2s ease both">
-            <div style="display:flex;align-items:center;gap:6px;background:rgba(118,100,86,.12);border-radius:10px;padding:0 10px;height:40px;margin-bottom:12px">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E6259" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-              <input value="{{ seasonQuery }}" onChange="{{ onSeasonQuery }}" placeholder="Search seasonings" style="flex:1;min-width:0;border:0;background:transparent;font:400 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;height:100%">
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:7px">
-              <sc-for list="{{ seasonChips }}" as="i" hint-placeholder-count="8">
-                <button onClick="{{ i.onPick }}" style="padding:10px 13px;border-radius:100px;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:all .16s ease;border:1.5px solid {{ i.bd }};background:{{ i.bg }};color:{{ i.fg }}">{{ i.label }}</button>
-              </sc-for>
-            </div>
-            <sc-if value="{{ noSeasonMatch }}"><div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">No seasonings match.</div></sc-if>
-          </div>
-        </sc-if>
-      </div>
-    </div>
-  </sc-if>
-</div>
-</sc-if>
-
 <sc-if value="{{ sReview }}">
 <div data-screen-label="14 Review ingredients" style="animation:dfade .3s ease both;padding:0 0 200px">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
     <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Back</button>
-    <span style="font:400 12px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ stepLabel }}</span>
   </div>
+  <sc-if value="{{ showProg }}">
+  <div style="padding:6px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
   <div style="padding:10px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">Review your ingredients</h1>
     <p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">{{ totalLabel }} Remove anything you've run out of.</p>
@@ -230,8 +203,19 @@ a{color:#C0522C}a:hover{color:#9C3F20}
 <div data-screen-label="15 Cooking time" style="animation:dfade .3s ease both;padding:0 0 200px">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
     <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Back</button>
-    <span style="font:400 12px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ stepLabel }}</span>
   </div>
+  <sc-if value="{{ showProg }}">
+  <div style="padding:6px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
   <div style="padding:10px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">How much time do you have?</h1>
     <p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Start to finish, including prep.</p>
@@ -259,6 +243,18 @@ a{color:#C0522C}a:hover{color:#9C3F20}
     <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Back</button>
     <button onClick="{{ editFromResults }}" style="padding:10px 0;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Edit ingredients</button>
   </div>
+  <sc-if value="{{ showProg }}">
+  <div style="padding:6px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
   <div style="padding:10px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16;text-wrap:pretty">{{ resultsTitle }}</h1>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
@@ -270,8 +266,7 @@ a{color:#C0522C}a:hover{color:#9C3F20}
   <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:16px">
     <sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
       <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:16px;overflow:hidden;box-shadow:0 3px 10px rgba(35,28,22,.05)">
-        <div style="height:136px;position:relative;background:repeating-linear-gradient(135deg,{{ o.tintA }} 0 12px,{{ o.tintB }} 12px 24px);display:flex;align-items:flex-end;justify-content:space-between;padding:12px">
-          <span style="font:400 12px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:rgba(35,28,22,.55);background:rgba(255,255,255,.85);border-radius:6px;padding:5px 8px">photo: {{ o.photo }}</span>
+        <div onClick="{{ o.onView }}" role="img" aria-label="{{ o.name }}" style="height:170px;position:relative;cursor:pointer;background:{{ o.bg }};display:flex;align-items:flex-end;justify-content:flex-end;padding:12px">
           <span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;background:#FFFFFF;border-radius:100px;padding:8px 12px">{{ o.timeLabel }}</span>
         </div>
         <div style="padding:15px 16px 16px">
@@ -283,14 +278,14 @@ a{color:#C0522C}a:hover{color:#9C3F20}
             <sc-if value="{{ o.hasMissing }}">
               <button onClick="{{ o.onMissing }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px;min-height:46px">
                 <span style="display:flex;align-items:center;gap:9px;font:600 15px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#9A5A2A"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:#F7E3CC;font:600 12px/20px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">!</span>{{ o.missingLabel }}</span>
-                <span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C">See swaps ›</span>
+                <span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;text-decoration:underline">See swaps</span>
               </button>
             </sc-if>
             <sc-if value="{{ o.noMissing }}">
               <div style="display:flex;align-items:center;gap:9px;padding:12px;font:600 15px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3E6B4F"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:#E7F0E8;font:600 12px/20px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">✓</span>Nothing missing</div>
             </sc-if>
           </div>
-          <button onClick="{{ o.onView }}" style="width:100%;margin-top:13px;padding:15px;border-radius:13px;background:#231C16;color:#FDFAF6;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif" style-hover="opacity:.9">View recipe</button>
+          <button onClick="{{ o.onView }}" style="width:100%;margin-top:14px;height:52px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:14px;background:#C0522C;color:#FFF7F0;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;box-shadow:0 4px 14px rgba(192,82,44,.3);transition:transform .12s ease,background .15s ease" style-hover="background:#A9461F" style-active="transform:scale(.98)">View recipe<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m1 1 6 6-6 6"></path></svg></button>
         </div>
       </div>
     </sc-for>
@@ -301,14 +296,25 @@ a{color:#C0522C}a:hover{color:#9C3F20}
 
 <sc-if value="{{ sRecipe }}">
 <div data-screen-label="Recipe overview" style="animation:dfade .3s ease both;padding:0 0 200px">
-  <div style="height:220px;position:relative;background:repeating-linear-gradient(135deg,{{ rTintA }} 0 14px,{{ rTintB }} 14px 28px)">
+  <div role="img" aria-label="{{ rName }}" style="height:250px;position:relative;background:{{ rBg }}">
     <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px">
       <button onClick="{{ back }}" aria-label="Back" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding-right:2px;background:rgba(253,250,246,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#231C16"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg></button>
       <button onClick="{{ onStar }}" aria-label="Save recipe" style="width:44px;height:44px;border-radius:50%;font:400 21px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:all .16s ease;background:{{ starBg }};color:{{ starFg }}">{{ starIcon }}</button>
     </div>
-    <span style="position:absolute;bottom:12px;left:16px;font:400 12px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:rgba(35,28,22,.55);background:rgba(255,255,255,.85);border-radius:6px;padding:5px 8px">photo: {{ rPhoto }}</span>
   </div>
-  <div style="padding:20px 20px 0">
+  <sc-if value="{{ showProg }}">
+  <div style="padding:14px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+  <div style="padding:18px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16;text-wrap:pretty">{{ rName }}</h1>
     <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:13px">
       <sc-for list="{{ rMeta }}" as="m" hint-placeholder-count="3">
@@ -344,38 +350,63 @@ a{color:#C0522C}a:hover{color:#9C3F20}
   <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
     <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Recipe</button>
   </div>
-  <div style="padding:10px 20px 0">
+  <sc-if value="{{ showProg }}">
+  <div style="padding:6px 20px 0">
+    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px">
+      <sc-for list="{{ prog }}" as="p" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+          <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+  <div style="padding:14px 20px 0">
     <div style="background:#E7F0E8;border-radius:14px;padding:18px">
-      <div style="display:flex;align-items:center;gap:8px;font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3E6B4F"><span style="width:20px;height:20px;border-radius:50%;background:#3E6B4F;color:#E7F0E8;font:600 12px/20px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">✓</span>Tonight's dinner</div>
+      <div style="display:flex;align-items:center;gap:8px;font:600 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3E6B4F"><span style="width:20px;height:20px;border-radius:50%;background:#3E6B4F;color:#E7F0E8;font:600 12px/20px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">✓</span>Tonight's dinner</div>
       <div style="font:700 28px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;margin-top:10px;text-wrap:pretty">{{ rName }}</div>
       <div style="font:600 15px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3E6B4F;margin-top:6px">{{ rTimeLabel }} · {{ rStepCount }}</div>
     </div>
   </div>
-  <sc-if value="{{ hasSwaps }}">
-    <div style="padding:14px 20px 0">
-      <div style="background:#FDF3E8;border-radius:16px;padding:14px 16px">
-        <div style="font:600 12px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#9A5A2A;margin-bottom:8px">Your swaps</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <sc-for list="{{ rSwaps }}" as="w" hint-placeholder-count="2">
-            <div style="font:400 15px/1.45 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3B322A"><strong style="font-weight:700">{{ w.name }}:</strong> {{ w.text }}</div>
-          </sc-for>
-        </div>
-      </div>
-    </div>
-  </sc-if>
   <div style="padding:14px 20px 0">
-    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:14px;padding:18px">
-      <div style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;margin-bottom:16px">How to make it</div>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <sc-for list="{{ rSteps }}" as="st" hint-placeholder-count="4">
-          <div style="display:flex;gap:12px">
-            <span style="width:26px;height:26px;flex:none;border-radius:50%;background:#231C16;color:#FDFAF6;font:600 13px/26px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">{{ st.n }}</span>
-            <span style="font:400 17px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3B322A;text-wrap:pretty;padding-top:2px">{{ st.text }}</span>
-          </div>
-        </sc-for>
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:14px;padding:16px 16px 8px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">Gather ingredients</span>
+        <span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ ingDoneLabel }}</span>
       </div>
+      <div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin:4px 0 6px">Tap each one as you set it out.</div>
+      <sc-for list="{{ cIngs }}" as="i" hint-placeholder-count="6">
+        <button onClick="{{ i.onToggle }}" aria-pressed="{{ i.done }}" style="width:100%;display:flex;align-items:flex-start;gap:12px;padding:10px 0;text-align:left;border-top:1px solid rgba(35,28,22,.06)">
+          <span style="width:24px;height:24px;flex:none;margin-top:1px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#FFFFFF;transition:all .15s ease;background:{{ i.boxBg }};border:1.5px solid {{ i.boxBd }}">{{ i.mark }}</span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <span style="font:400 17px/1.35 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:color .15s ease;color:{{ i.fg }};text-decoration:{{ i.deco }}">{{ i.q }}</span>
+            <sc-if value="{{ i.hasNote }}"><span style="font:400 13px/1.35 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#9A5A2A">{{ i.note }}</span></sc-if>
+          </span>
+        </button>
+      </sc-for>
     </div>
   </div>
+  <div style="padding:14px 20px 0">
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:14px;padding:16px 16px 8px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+        <span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">How to make it</span>
+        <span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ stepDoneLabel }}</span>
+      </div>
+      <div style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259;margin:4px 0 6px">Tap a step to cross it off.</div>
+      <sc-for list="{{ cSteps }}" as="st" hint-placeholder-count="4">
+        <button onClick="{{ st.onToggle }}" aria-pressed="{{ st.done }}" style="width:100%;display:flex;align-items:flex-start;gap:12px;padding:12px 0;text-align:left;border-top:1px solid rgba(35,28,22,.06)">
+          <span style="width:28px;height:28px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:all .15s ease;background:{{ st.numBg }};color:{{ st.numFg }}">{{ st.badge }}</span>
+          <span style="flex:1;min-width:0;font:400 17px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-wrap:pretty;padding-top:2px;transition:color .15s ease;color:{{ st.fg }};text-decoration:{{ st.deco }}">{{ st.text }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ allDone }}">
+    <div style="padding:14px 20px 0;animation:dfade .25s ease both">
+      <div style="background:#E7F0E8;border-radius:14px;padding:14px 16px;font:600 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3E6B4F">Every step done. Enjoy your dinner!</div>
+    </div>
+  </sc-if>
 </div>
 </sc-if>
 
@@ -386,13 +417,13 @@ a{color:#C0522C}a:hover{color:#9C3F20}
   </div>
   <div style="padding:10px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">{{ authTitle }}</h1>
-    <p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;text-wrap:pretty">{{ authSub }}</p>
+    <sc-if value="{{ hasAuthSub }}"><p style="margin:10px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;text-wrap:pretty">{{ authSub }}</p></sc-if>
   </div>
   <sc-if value="{{ isSignup }}">
     <div style="padding:16px 20px 0">
       <div style="background:#FAF1E6;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:10px;font:600 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3B322A"><span style="color:#3E6B4F;font-weight:700">✓</span>Your ingredient selections, so next time starts where you left off</div>
-        <div style="display:flex;gap:10px;font:600 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#3B322A"><span style="color:#3E6B4F;font-weight:700">✓</span>Recipes you star, in one Favorites list</div>
+        <div style="display:flex;align-items:center;gap:10px;font:600 17px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"><span style="width:22px;height:22px;flex:none;border-radius:50%;background:#E7F0E8;color:#3E6B4F;font:600 12px/22px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">✓</span>Save your ingredients</div>
+        <div style="display:flex;align-items:center;gap:10px;font:600 17px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"><span style="width:22px;height:22px;flex:none;border-radius:50%;background:#E7F0E8;color:#3E6B4F;font:600 12px/22px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">✓</span>Favorite recipes you like</div>
       </div>
     </div>
   </sc-if>
@@ -402,7 +433,8 @@ a{color:#C0522C}a:hover{color:#9C3F20}
     </sc-if>
     <label style="display:flex;flex-direction:column;gap:7px"><span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">Email</span><input value="{{ fEmail }}" onChange="{{ onEmail }}" placeholder="you@example.com" type="email" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"></label>
     <label style="display:flex;flex-direction:column;gap:7px"><span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">Password</span><input value="{{ fPass }}" onChange="{{ onPass }}" placeholder="At least 8 characters" type="password" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"></label>
-    <div style="display:flex;justify-content:center;gap:6px;font:400 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;padding-top:4px"><span>{{ switchLabel }}</span><button onClick="{{ switchAuth }}" style="font:600 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C">{{ switchCta }}</button></div>
+    <button onClick="{{ submitAuthFn }}" style="width:100%;margin-top:6px;height:52px;border-radius:14px;background:#C0522C;color:#FFF7F0;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif" style-active="transform:scale(.98)">{{ authCta }}</button>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;font:400 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53"><span>{{ switchLabel }}</span><button onClick="{{ switchAuth }}" style="display:flex;align-items:center;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C">{{ switchCta }}</button></div>
   </div>
 </div>
 </sc-if>
@@ -463,17 +495,35 @@ a{color:#C0522C}a:hover{color:#9C3F20}
 <div data-screen-label="28 Favorites" style="animation:dfade .3s ease both;padding:0 0 110px">
   <div style="padding:34px 20px 0">
     <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">Favorites</h1>
-    <p style="margin:8px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Recipes you've saved.</p>
+    <p style="margin:8px 0 0;font:400 15px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Recipes you've saved, checked against your ingredients.</p>
   </div>
   <sc-if value="{{ hasFavs }}">
-    <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
-      <sc-for list="{{ favList }}" as="f" hint-placeholder-count="3">
-        <button onClick="{{ f.onOpen }}" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(35,28,22,.08);text-align:left">
-          <span style="width:64px;height:64px;flex:none;border-radius:12px;background:repeating-linear-gradient(135deg,{{ f.tintA }} 0 8px,{{ f.tintB }} 8px 16px)"></span>
-          <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;gap:4px"><span style="font:600 17px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ f.name }}</span><span style="font:400 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ f.timeLabel }}</span></span>
-          <span style="font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C;padding-right:6px">›</span>
+    <div style="padding:16px 20px 0">
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(118,100,86,.12);border-radius:10px;padding:0 10px;height:40px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E6259" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+        <input value="{{ favQuery }}" onChange="{{ onFavQuery }}" placeholder="Search favorites" style="flex:1;min-width:0;border:0;background:transparent;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;height:100%">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;overflow-x:auto;scrollbar-width:none">
+        <sc-for list="{{ favFilters }}" as="f" hint-placeholder-count="3">
+          <button onClick="{{ f.onPick }}" style="flex:none;padding:0 14px;border-radius:100px;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;transition:all .16s ease;border:1.5px solid {{ f.bd }};background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ favShown }}" as="f" hint-placeholder-count="3">
+        <button onClick="{{ f.onOpen }}" style="display:flex;align-items:stretch;gap:14px;padding:10px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(35,28,22,.08);text-align:left">
+          <span style="width:84px;min-height:84px;flex:none;border-radius:12px;background:{{ f.bg }}"></span>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:2px 0">
+            <span style="font:600 17px/1.25 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ f.name }}</span>
+            <span style="font:400 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ f.timeLabel }}</span>
+            <span style="display:flex;align-items:flex-start;gap:6px;font:400 13px/1.35 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ f.missFg }}"><span style="width:16px;height:16px;flex:none;margin-top:1px;border-radius:50%;font:600 10px/16px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center;background:{{ f.missBg }}">{{ f.missMark }}</span>{{ f.missText }}</span>
+          </span>
+          <span style="align-self:center;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C;padding-right:4px">›</span>
         </button>
       </sc-for>
+      <sc-if value="{{ noFavMatch }}">
+        <div style="padding:18px;border-radius:14px;border:1.5px dashed rgba(35,28,22,.2);text-align:center;font:400 15px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">No favorites match. Try another search or filter.</div>
+      </sc-if>
     </div>
   </sc-if>
   <sc-if value="{{ noFavs }}">
@@ -501,7 +551,7 @@ a{color:#C0522C}a:hover{color:#9C3F20}
     <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;background:#FAF1E6">
         <span style="width:52px;height:52px;border-radius:50%;background:#C0522C;color:#FFF7F0;font:600 20px/52px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">{{ userInitial }}</span>
-        <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;gap:3px"><span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ userName }}</span><span style="font:400 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">{{ userEmail }}</span></span>
+        <span style="flex:1;min-width:0;text-align:left;display:flex;flex-direction:column;gap:3px"><span style="font:600 17px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">{{ userName }}</span><span style="font:400 13px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53;overflow:hidden;text-overflow:ellipsis">{{ userEmail }}</span></span><button onClick="{{ goEditProfile }}" style="flex:none;padding:0 14px;border-radius:100px;background:#FFFFFF;border:1px solid rgba(35,28,22,.14);font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C">Edit profile</button>
       </div>
       <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
         <button onClick="{{ onProfSaved }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(35,28,22,.06);text-align:left">
@@ -524,6 +574,25 @@ a{color:#C0522C}a:hover{color:#9C3F20}
       </div>
     </div>
   </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sEditProfile }}">
+<div data-screen-label="Edit profile" style="animation:dfade .3s ease both;padding:0 0 110px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-4px;padding:0 10px 0 0;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#C0522C"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"></path></svg>Profile</button>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.01em;color:#231C16">Edit profile</h1>
+  </div>
+  <div style="padding:20px 20px 0;display:flex;flex-direction:column;align-items:center;gap:8px">
+    <span style="width:84px;height:84px;border-radius:50%;background:#C0522C;color:#FFF7F0;font:600 34px/84px -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;text-align:center">{{ editInitial }}</span>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:14px">
+    <label style="display:flex;flex-direction:column;gap:7px"><span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">First name</span><input value="{{ fName }}" onChange="{{ onName }}" placeholder="Sam" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"></label>
+    <label style="display:flex;flex-direction:column;gap:7px"><span style="font:600 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16">Email</span><input value="{{ fEmail }}" onChange="{{ onEmail }}" type="email" placeholder="you@example.com" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:400 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16"></label>
+    <button onClick="{{ saveProfile }}" style="width:100%;margin-top:6px;height:52px;border-radius:14px;background:#C0522C;color:#FFF7F0;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Save changes</button>
+  </div>
 </div>
 </sc-if>
 
@@ -607,14 +676,15 @@ a{color:#C0522C}a:hover{color:#9C3F20}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900},&quot;jumpTo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;section&quot;:&quot;Prototype&quot;,&quot;default&quot;:&quot;Live prototype&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;Live prototype&quot;,&quot;1 · Welcome&quot;,&quot;2 · Guest ingredient entry&quot;,&quot;3 · Protein category open&quot;,&quot;4 · Protein selected&quot;,&quot;5 · Vegetable category open&quot;,&quot;6 · Vegetables selected&quot;,&quot;7 · Grains &amp; starches open&quot;,&quot;8 · Grain selected&quot;,&quot;9 · Ingredient search&quot;,&quot;10 · Search result added&quot;,&quot;11 · Basic staples checklist&quot;,&quot;12 · Staples confirmed&quot;,&quot;13 · Additional seasonings&quot;,&quot;14 · Review ingredients&quot;,&quot;15 · Cooking time&quot;,&quot;16 · Dinner recommendations&quot;,&quot;17 · Missing ingredients overlay&quot;,&quot;18 · Recipe overview&quot;,&quot;19 · Dinner selected&quot;,&quot;20 · Save invitation&quot;,&quot;21 · Create account&quot;,&quot;22 · Account created, review&quot;,&quot;23 · Selections saved&quot;,&quot;24 · Returning-user review&quot;,&quot;25 · Update saved selections&quot;,&quot;26 · New recommendations&quot;,&quot;27 · Recipe saved&quot;,&quot;28 · Saved recipes&quot;]}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900},&quot;jumpTo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;section&quot;:&quot;Prototype&quot;,&quot;default&quot;:&quot;Live prototype&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;Live prototype&quot;,&quot;1 · Home&quot;,&quot;2 · Guest ingredient entry&quot;,&quot;3 · Protein tab&quot;,&quot;4 · Protein selected&quot;,&quot;5 · Vegetable tab&quot;,&quot;6 · Vegetables selected&quot;,&quot;7 · Grains tab&quot;,&quot;8 · Grain selected&quot;,&quot;9 · Ingredient search&quot;,&quot;10 · Search result added&quot;,&quot;11 · Spices &amp; basics tab&quot;,&quot;12 · Basics selected&quot;,&quot;13 · Seasonings selected&quot;,&quot;14 · Review ingredients&quot;,&quot;15 · Cooking time&quot;,&quot;16 · Dinner recommendations&quot;,&quot;17 · Missing ingredients overlay&quot;,&quot;18 · Recipe overview&quot;,&quot;19 · Cooking with checklists&quot;,&quot;20 · Save invitation&quot;,&quot;21 · Create account&quot;,&quot;22 · Account created, review&quot;,&quot;23 · Selections saved&quot;,&quot;24 · Returning-user review&quot;,&quot;25 · Update saved selections&quot;,&quot;26 · New recommendations&quot;,&quot;27 · Recipe saved&quot;,&quot;28 · Saved recipes&quot;]}}">
 const CATS = [
-  { name: 'Proteins', short: 'Proteins', tint: '#F5DACE', dim: '#EBC8B8', items: ['Chicken', 'Ground Beef', 'Eggs', 'Black Beans', 'Tofu', 'Shrimp', 'Salmon', 'Pork Chops'] },
-  { name: 'Vegetables', short: 'Veggies', tint: '#DDEAD5', dim: '#C9DCBF', items: ['Broccoli', 'Carrots', 'Bell Peppers', 'Onion', 'Garlic', 'Spinach', 'Tomatoes', 'Mushrooms', 'Zucchini', 'Corn'] },
-  { name: 'Grains & Starches', short: 'Grains', tint: '#F5E6C2', dim: '#EAD6A5', items: ['Rice', 'Pasta', 'Potatoes', 'Tortillas', 'Bread', 'Noodles', 'Quinoa'] },
-  { name: 'Dairy', short: 'Dairy', tint: '#EEE8DD', dim: '#DFD6C6', items: ['Cheese', 'Parmesan', 'Butter', 'Milk', 'Sour Cream', 'Yogurt'] },
-  { name: 'Fruits', short: 'Fruits', tint: '#F4DADF', dim: '#E7C4CB', items: ['Lemon', 'Lime', 'Avocado', 'Apples'] },
-  { name: 'Pantry & Sauces', short: 'Pantry', tint: '#E6DED2', dim: '#D6CCBD', items: ['Soy Sauce', 'Honey', 'Salsa', 'Canned Tomatoes', 'Coconut Milk', 'Broth', 'Peanut Butter'] }
+  { name: 'Proteins', short: 'Proteins', icon: 'M15 3.5a5.5 5.5 0 1 1-3.9 9.4A5.5 5.5 0 0 1 15 3.5zM11.1 12.9 7.6 16.4M7.6 16.4a1.9 1.9 0 1 1-2.7 2.7 1.9 1.9 0 1 1 2.7-2.7z', tint: '#F5DACE', dim: '#EBC8B8', items: ['Chicken', 'Ground Beef', 'Eggs', 'Black Beans', 'Tofu', 'Shrimp', 'Salmon', 'Pork Chops'] },
+  { name: 'Vegetables', short: 'Veggies', icon: 'M16 8 4 20l2-6 6-8a3 3 0 0 1 4 2zM15 7l2-4M17 9l4-2M16 8l3-3M8 13l2 2M10 10l2 2', tint: '#DDEAD5', dim: '#C9DCBF', items: ['Broccoli', 'Carrots', 'Bell Peppers', 'Onion', 'Garlic', 'Spinach', 'Tomatoes', 'Mushrooms', 'Zucchini', 'Corn'] },
+  { name: 'Grains & Starches', short: 'Grains', icon: 'M12 21V8M12 8c0-2 1-4 3-5 0 2-1 4-3 5zM12 8c0-2-1-4-3-5 0 2 1 4 3 5zM12 13c1-2 3-3 5-3-1 2-3 3-5 3zM12 13c-1-2-3-3-5-3 1 2 3 3 5 3zM12 18c1-2 3-3 5-3-1 2-3 3-5 3zM12 18c-1-2-3-3-5-3 1 2 3 3 5 3z', tint: '#F5E6C2', dim: '#EAD6A5', items: ['Rice', 'Pasta', 'Potatoes', 'Tortillas', 'Bread', 'Noodles', 'Quinoa'] },
+  { name: 'Dairy', short: 'Dairy', icon: 'M8 8 9.5 3.5h5L16 8v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1zM8 8h8M8 13h8', tint: '#EEE8DD', dim: '#DFD6C6', items: ['Cheese', 'Parmesan', 'Butter', 'Milk', 'Sour Cream', 'Yogurt'] },
+  { name: 'Fruits', short: 'Fruits', icon: 'M12 7.5c-1.5-1-5-1.5-6.5 1.5S5 17 7.5 19.5c1.5 1.5 3 1 4.5.5 1.5.5 3 1 4.5-.5C19 17 19.5 12 18 9s-4.5-2.5-6-1.5zM12 7.5c0-2 1-3.5 3-4.5', tint: '#F4DADF', dim: '#E7C4CB', items: ['Lemon', 'Lime', 'Avocado', 'Apples'] },
+  { name: 'Spices & Basics', short: 'Spices', icon: 'M9 9h6l1 11a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1zM9.5 9 10 4h4l.5 5M11 6.5h.01M13 6.5h.01', tint: '#E9E1EC', dim: '#DCD1E0', items: ['Salt', 'Pepper', 'Cooking Oil', 'Garlic Powder', 'Onion Powder', 'Paprika', 'Chili Powder', 'Cumin', 'Dried Herbs', 'Oregano', 'Chili Flakes', 'Curry Powder', 'Italian Seasoning', 'Cinnamon', 'Ground Ginger'] },
+  { name: 'Pantry & Sauces', short: 'Pantry', icon: 'M8 6h8v2.5c1.2.8 2 2 2 3.5v7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-7c0-1.5.8-2.7 2-3.5zM7.5 3.5h9V6h-9zM6 13h12', tint: '#E6DED2', dim: '#D6CCBD', items: ['Soy Sauce', 'Honey', 'Salsa', 'Canned Tomatoes', 'Coconut Milk', 'Broth', 'Peanut Butter'] }
 ];
 const EXTRAS = { Ginger: 'Vegetables', Cilantro: 'Vegetables', Scallions: 'Vegetables', Kale: 'Vegetables', Cabbage: 'Vegetables', Cauliflower: 'Vegetables', 'Green Beans': 'Vegetables', 'Frozen Peas': 'Vegetables', 'Sweet Potatoes': 'Grains & Starches', Couscous: 'Grains & Starches', Chickpeas: 'Proteins', Lentils: 'Proteins', Bacon: 'Proteins', 'Ground Turkey': 'Proteins', Tuna: 'Proteins', 'Cream Cheese': 'Dairy', Oranges: 'Fruits', Bananas: 'Fruits', 'Hot Sauce': 'Pantry & Sauces', Vinegar: 'Pantry & Sauces', 'Garlic Bread': 'Grains & Starches' };
 const CAT_OF = {};
@@ -631,9 +701,12 @@ const T = { warm: ['#F2DFC6', '#EDD6B8'], green: ['#E2EBDD', '#D8E4D2'], red: ['
 const I = (k, q, a) => Object.assign({ k, q }, a || {});
 const GARLIC = I('Garlic', '3 cloves garlic, minced', { s: 'Garlic Powder', sq: '1 tsp garlic powder' });
 const SOY = I('Soy Sauce', '3 tbsp soy sauce', { o: 'Season with an extra pinch of salt and a squeeze of lemon if you have one.' });
-const OIL = I('Cooking Oil', '2 tbsp cooking oil');
-const SALT = I('Salt', 'Salt, to taste');
-const PEP = I('Pepper', 'Pepper, to taste');
+const OIL = I('Cooking Oil', '2 tbsp cooking oil', { s: 'Butter', sq: '2 tbsp butter' });
+const SALT = I('Salt', 'Salt, to taste', { o: 'Fine to leave out. Soy sauce or cheese can add saltiness.' });
+const PEP = I('Pepper', 'Pepper, to taste', { o: 'Fine to leave out.' });
+const PX = id => 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=900';
+const IMG = { r1: 105588, r2: 21822134, r3: 5618848, r4: 461198, r5: 6120238, r6: 9760214, r7: 27590340, r8: 23645813, r9: 27365296, r10: 2092906, r11: 6249394 };
+const bgOf = r => IMG[r.id] ? "url('" + PX(IMG[r.id]) + "') center/cover no-repeat, " + r.tint[0] : 'repeating-linear-gradient(135deg,' + r.tint[0] + ' 0 12px,' + r.tint[1] + ' 12px 24px)';
 
 const RECIPES = [
   { id: 'r1', name: 'Garlic Chicken & Broccoli Rice Bowl', time: 20, photo: 'chicken rice bowl', tint: T.green, blurb: 'Everything cooks in one pan while the rice steams.',
@@ -674,8 +747,8 @@ const RECIPES = [
 const SEL = { bg: '#231C16', fg: '#FDFAF6', bd: '#231C16' };
 const UNSEL = { bg: '#FFFFFF', fg: '#4A4038', bd: 'rgba(35,28,22,.14)' };
 const chip = a => (a ? SEL : UNSEL);
-const BASE = { screen: 'ingredients', hist: [], openCat: null, selected: [], lastAdded: null, query: '', staples: [], seasonings: [], seasonOpen: false, seasonQuery: '', time: 30, resultsMode: 'new', recipeId: null, sheet: null, invite: null, signedIn: false, user: { name: '', email: '' }, form: { name: '', email: '', password: '' }, authMode: 'signup', saved: null, favs: [], toast: null, pendingFav: null };
-const DEMO_SAVED = { selected: ['Chicken', 'Broccoli', 'Rice', 'Garlic'], staples: ['Salt', 'Pepper', 'Cooking Oil'], seasonings: ['Garlic Powder', 'Paprika'], time: 30 };
+const BASE = { screen: 'ingredients', hist: [], openCat: null, selected: [], lastAdded: null, query: '', staples: [], seasonings: [], seasonOpen: false, seasonQuery: '', time: 30, resultsMode: 'new', recipeId: null, sheet: null, invite: null, signedIn: false, user: { name: '', email: '' }, form: { name: '', email: '', password: '' }, authMode: 'signup', saved: null, favs: [], toast: null, pendingFav: null, tab: 'home', homeSnap: null, doneIng: [], doneStep: [], cookFor: null, favQuery: '', favFilter: 'All' };
+const DEMO_SAVED = { selected: ['Chicken', 'Broccoli', 'Rice', 'Garlic', 'Salt', 'Pepper', 'Cooking Oil', 'Garlic Powder', 'Paprika'], staples: [], seasonings: [], time: 30 };
 
 class Component extends DCLogic {
   state = { ...BASE };
@@ -687,7 +760,19 @@ class Component extends DCLogic {
   top() { try { window.scrollTo(0, 0); } catch (e) {} }
   go(screen, extra) { this.top(); this.setState(s => ({ screen, hist: [...s.hist, s.screen], sheet: null, invite: null, query: '', ...(extra || {}) })); }
   back() { this.top(); this.setState(s => { const h = [...s.hist]; const prev = h.pop() || 'ingredients'; return { screen: prev, hist: h, sheet: null, invite: null, query: '' }; }); }
-  home() { this.top(); this.setState({ screen: 'ingredients', hist: [], sheet: null, invite: null, query: '' }); }
+  home() { this.top(); this.setState({ screen: 'ingredients', hist: [], sheet: null, invite: null, query: '', tab: 'home', homeSnap: null }); }
+  switchTab(t) {
+    const s = this.state;
+    if (t === 'home') {
+      if (s.tab !== 'home' && s.homeSnap) { this.top(); this.setState({ screen: s.homeSnap.screen, hist: s.homeSnap.hist, tab: 'home', homeSnap: null, sheet: null, invite: null }); }
+      else this.home();
+      return;
+    }
+    if (s.tab === t && s.screen === t) return;
+    const snap = s.tab === 'home' ? { screen: s.screen, hist: s.hist } : s.homeSnap;
+    this.top();
+    this.setState({ screen: t, hist: [], tab: t, homeSnap: snap, sheet: null, invite: null, query: '' });
+  }
   toast(msg, action) { clearTimeout(this._t); this.setState({ toast: { msg, action } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
   haveOf(s) { return new Set([...s.selected, ...s.staples, ...s.seasonings]); }
   loadSaved(extra, screen) { const sv = this.state.saved || DEMO_SAVED; this.go(screen, { selected: [...sv.selected], staples: [...sv.staples], seasonings: [...sv.seasonings], time: sv.time, ...(extra || {}) }); }
@@ -737,11 +822,11 @@ class Component extends DCLogic {
     if (s.authMode === 'signup') {
       const hasSel = s.selected.length > 0;
       const favs = s.pendingFav && !s.favs.includes(s.pendingFav) ? [...s.favs, s.pendingFav] : s.favs;
-      this.setState({ signedIn: true, user: { name, email }, favs, pendingFav: null, screen: hasSel ? 'acctReview' : 'ingredients', hist: hasSel ? [...s.hist, 'auth'] : [] });
+      this.setState({ tab: 'home', homeSnap: null, signedIn: true, user: { name, email }, favs, pendingFav: null, screen: hasSel ? 'acctReview' : 'ingredients', hist: hasSel ? [...s.hist, 'auth'] : [] });
       if (!hasSel) this.toast('Account created');
     } else {
       const sv = s.saved || DEMO_SAVED;
-      this.setState({ signedIn: true, user: { name: f.name.trim() || 'Sam', email }, saved: sv, selected: [...sv.selected], staples: [...sv.staples], seasonings: [...sv.seasonings], time: sv.time, screen: 'returning', hist: [] });
+      this.setState({ tab: 'home', homeSnap: null, signedIn: true, user: { name: f.name.trim() || 'Sam', email }, saved: sv, selected: [...sv.selected], staples: [...sv.staples], seasonings: [...sv.seasonings], time: sv.time, screen: 'returning', hist: [] });
     }
   }
 
@@ -751,18 +836,20 @@ class Component extends DCLogic {
     clearTimeout(this._t);
     const P = ['Chicken', 'Broccoli', 'Rice', 'Garlic'], ST = ['Salt', 'Pepper', 'Cooking Oil'], SE = ['Garlic Powder', 'Paprika'];
     const U = { name: 'Sam', email: 'sam@example.com' };
-    const full = { selected: P, staples: ST, seasonings: SE, time: 30 };
-    const UPD = ['Broccoli', 'Rice', 'Garlic', 'Tofu', 'Bell Peppers', 'Pasta'];
-    const flow = ['ingredients', 'staples', 'review', 'time'];
+    const ALLSEL = [...P, ...ST, ...SE];
+    const full = { selected: ALLSEL, time: 30 };
+    const UPD = ['Broccoli', 'Rice', 'Garlic', 'Tofu', 'Bell Peppers', 'Pasta', ...ST, ...SE];
+    const flow = ['ingredients', 'review', 'time'];
     const m1 = this.matches({ ...BASE, ...full });
     const r0 = m1[0] ? m1[0].r.id : 'r1';
     const rMiss = (m1.find(x => x.ms.length) || m1[0] || { r: { id: 'r1' } }).r.id;
-    const signed = { signedIn: true, user: U, saved: { ...full } };
+    const signed = { signedIn: true, user: U, saved: { ...full, staples: [], seasonings: [] } };
     const m2 = this.matches({ ...BASE, ...full, selected: UPD });
     const rU = m2[0] ? m2[0].r.id : 'r5';
     const ing = { screen: 'ingredients', hist: [] };
+    const SP = 'Spices & Basics';
     const M = {
-      1: { screen: 'ingredients' },
+      1: { ...ing },
       2: { ...ing },
       3: { ...ing, openCat: 'Proteins' },
       4: { ...ing, openCat: 'Proteins', selected: ['Chicken'], lastAdded: 'Chicken' },
@@ -770,26 +857,26 @@ class Component extends DCLogic {
       6: { ...ing, openCat: 'Vegetables', selected: ['Chicken', 'Broccoli'], lastAdded: 'Broccoli' },
       7: { ...ing, openCat: 'Grains & Starches', selected: ['Chicken', 'Broccoli'] },
       8: { ...ing, openCat: 'Grains & Starches', selected: ['Chicken', 'Broccoli', 'Rice'], lastAdded: 'Rice' },
-      9: { ...ing, query: 'gar', selected: ['Chicken', 'Broccoli', 'Rice'] },
-      10: { ...ing, query: 'gar', selected: P, lastAdded: 'Garlic', toast: { msg: 'Garlic added to your ingredients' } },
-      11: { screen: 'staples', hist: ['ingredients'], selected: P },
-      12: { screen: 'staples', hist: ['ingredients'], selected: P, staples: ST },
-      13: { screen: 'staples', hist: ['ingredients'], selected: P, staples: ST, seasonOpen: true, seasonings: SE },
-      14: { screen: 'review', hist: ['ingredients', 'staples'], ...full },
-      15: { screen: 'time', hist: ['ingredients', 'staples', 'review'], ...full },
+      9: { ...ing, openCat: 'Grains & Starches', query: 'gar', selected: ['Chicken', 'Broccoli', 'Rice'] },
+      10: { ...ing, openCat: 'Grains & Starches', query: 'gar', selected: P, lastAdded: 'Garlic', toast: { msg: 'Garlic added to your ingredients' } },
+      11: { ...ing, openCat: SP, selected: P },
+      12: { ...ing, openCat: SP, selected: [...P, ...ST], lastAdded: 'Cooking Oil' },
+      13: { ...ing, openCat: SP, selected: ALLSEL, lastAdded: 'Paprika' },
+      14: { screen: 'review', hist: ['ingredients'], ...full },
+      15: { screen: 'time', hist: ['ingredients', 'review'], ...full },
       16: { screen: 'results', hist: flow, ...full },
       17: { screen: 'results', hist: flow, ...full, sheet: rMiss },
       18: { screen: 'recipe', hist: [...flow, 'results'], ...full, recipeId: r0 },
-      19: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0 },
-      20: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0, invite: 'save' },
+      19: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0, cookFor: r0, doneIng: [0, 1, 2], doneStep: [0] },
+      20: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0, cookFor: r0, invite: 'save' },
       21: { screen: 'auth', authMode: 'signup', hist: [...flow, 'results', 'recipe', 'cooking'], ...full, recipeId: r0 },
       22: { screen: 'acctReview', hist: [], ...full, signedIn: true, user: U },
       23: { screen: 'savedSel', hist: [], ...full, ...signed },
       24: { screen: 'returning', hist: [], ...full, ...signed },
       25: { screen: 'update', hist: ['returning'], ...full, ...signed, selected: UPD },
-      26: { screen: 'results', hist: ['returning', 'update'], ...full, selected: UPD, ...signed, saved: { ...full, selected: UPD }, resultsMode: 'updated' },
+      26: { screen: 'results', hist: ['returning', 'update'], ...full, selected: UPD, ...signed, saved: { ...full, selected: UPD, staples: [], seasonings: [] }, resultsMode: 'updated' },
       27: { screen: 'recipe', hist: ['returning', 'update', 'results'], ...full, selected: UPD, ...signed, recipeId: rU, favs: [rU], toast: { msg: 'Saved to your Favorites', action: 'favs' } },
-      28: { screen: 'favs', hist: [], ...full, ...signed, favs: [rU, 'r1', 'r7'] }
+      28: { screen: 'favs', tab: 'favs', hist: [], ...full, ...signed, favs: [rU, 'r1', 'r7', 'r10'] }
     };
     if (M[n]) { this.top(); this.setState({ ...BASE, ...M[n] }); }
   }
@@ -806,7 +893,7 @@ class Component extends DCLogic {
     const v = {
       sWelcome: scr === 'welcome', sEditor: isEditor, sStaples: scr === 'staples', sReview: scr === 'review', sTime: scr === 'time',
       sResults: scr === 'results', sRecipe: scr === 'recipe', sCooking: scr === 'cooking', sAuth: scr === 'auth', sAcct: scr === 'acctReview',
-      sSavedSel: scr === 'savedSel', sReturning: scr === 'returning', sFavs: scr === 'favs', sProfile: scr === 'profile',
+      sSavedSel: scr === 'savedSel', sReturning: scr === 'returning', sFavs: scr === 'favs', sProfile: scr === 'profile', sEditProfile: scr === 'editProfile',
       isGuest: !s.signedIn, isSigned: s.signedIn,
       userName: s.user.name || 'Sam', userEmail: s.user.email, userInitial: (s.user.name || 'S').charAt(0).toUpperCase(),
       back: () => this.back(),
@@ -815,9 +902,14 @@ class Component extends DCLogic {
       howSteps: [{ n: 1, t: 'Add your ingredients', d: 'Browse categories or search' }, { n: 2, t: 'Set your cooking time', d: '15 minutes to an hour or more' }, { n: 3, t: 'Pick from three dinners', d: 'With swaps for anything missing' }]
     };
 
+    const STEP_OF = { ingredients: 0, update: 0, review: 1, time: 2, results: 3, recipe: 3, cooking: 4 };
+    const cur = STEP_OF[scr];
+    v.showProg = cur !== undefined && s.tab === 'home';
+    v.prog = ['Ingredients', 'Review', 'Time', 'Recipes', 'Cook'].map((l, k) => ({ label: l, bar: k <= (cur || 0) ? '#C0522C' : 'rgba(35,28,22,.12)', fg: k === cur ? '#231C16' : '#6E6259', w: k === cur ? 600 : 400 }));
+
     // Editor
     v.editorTitle = scr === 'update' ? 'Update your ingredients' : 'What ingredients do you have?';
-    v.editorSub = scr === 'update' ? "Add what's new and remove what's gone. Your basics and seasonings stay saved." : "Tell us what you have and how much time you've got. We'll give you a few dinner ideas that fit.";
+    v.editorSub = scr === 'update' ? "Add what's new and remove what's gone." : "Tell us what you have and how much time you've got. We'll give you a few dinner ideas that fit.";
     v.isHomeEditor = scr === 'ingredients' && !s.hist.length;
     v.notHomeEditor = !v.isHomeEditor;
     v.query = s.query || '';
@@ -833,9 +925,10 @@ class Component extends DCLogic {
       const open = c.name === act.name;
       const count = c.items.filter(n => selSet.has(n)).length;
       return {
-        short: c.short, open, h: open ? 54 : 44, weight: open ? 600 : 400,
-        tabBg: open ? c.tint : c.dim,
-        shadow: open ? 'none' : 'inset 0 -6px 8px -6px rgba(35,28,22,.18)',
+        name: c.name, icon: c.icon, open, h: open ? 56 : 46,
+        tabBg: open ? c.tint : 'transparent',
+        fg: open ? '#231C16' : '#6E6259',
+        bd: open ? c.tint : 'rgba(35,28,22,.14)',
         hasCount: count > 0, count,
         onToggle: () => this.setState({ openCat: c.name })
       };
@@ -843,7 +936,7 @@ class Component extends DCLogic {
     const actCount = act.items.filter(n => selSet.has(n)).length;
     v.activeName = act.name;
     v.activeTint = act.tint;
-    v.panelRadius = CATS[0].name === act.name ? '0 16px 16px 16px' : '16px';
+    v.panelRadius = CATS[0].name === act.name ? '0 16px 16px 16px' : CATS[CATS.length - 1].name === act.name ? '16px 0 16px 16px' : '16px';
     v.activeCountLabel = actCount ? actCount + ' added' : act.items.length + ' items';
     v.activeItems = act.items.map(n => { const on = selSet.has(n); return { label: n, bg: on ? '#231C16' : '#FFFFFF', fg: on ? '#FDFAF6' : '#3B322A', bd: on ? '#231C16' : 'rgba(35,28,22,.10)', onPick: () => this.toggleIng(n) }; });
     const found = q ? ALL.filter(n => n.toLowerCase().includes(q)).sort((a, b) => (b.toLowerCase().startsWith(q) - a.toLowerCase().startsWith(q)) || a.localeCompare(b)).slice(0, 8) : [];
@@ -891,14 +984,13 @@ class Component extends DCLogic {
 
     // Results
     const ms = this.matches(s);
-    const nWord = ['No', 'One', 'Two', 'Three'][ms.length];
-    v.resultsTitle = s.resultsMode === 'updated' ? 'New ideas for your updated ingredients' : nWord + ' dinner' + (ms.length === 1 ? '' : 's') + ' you can make';
+    v.resultsTitle = s.resultsMode === 'updated' ? 'New ideas for your updated ingredients' : ms.length ? ms.length + ' dinner' + (ms.length === 1 ? '' : 's') + ' you can make' : 'No dinners match yet';
     v.criteria = [tl(s.time) + ' or less', plural(total, 'ingredient')];
     v.editFromResults = () => (s.signedIn && s.saved ? this.go('update') : this.go('review'));
     v.options = ms.map(x => {
       const core = x.r.ing.filter(i => !STAPLE_SET.has(i.k) && !SEASON_SET.has(i.k)).length;
       return {
-        name: x.r.name, blurb: x.r.blurb, photo: x.r.photo, tintA: x.r.tint[0], tintB: x.r.tint[1], timeLabel: tl(x.r.time) + ' total',
+        name: x.r.name, blurb: x.r.blurb, photo: x.r.photo, bg: bgOf(x.r), tintA: x.r.tint[0], tintB: x.r.tint[1], timeLabel: tl(x.r.time) + ' total',
         haveLabel: 'Uses ' + x.hv.length + ' of your ingredients',
         hasMissing: x.ms.length > 0, noMissing: !x.ms.length,
         missingLabel: x.ms.length + ' missing ingredient' + (x.ms.length === 1 ? '' : 's'),
@@ -934,6 +1026,21 @@ class Component extends DCLogic {
           return { q: i.q, mark: ok ? '✓' : '!', markBg: ok ? '#E7F0E8' : '#F7E3CC', markFg: ok ? '#3E6B4F' : '#9A5A2A', rowBg: ok ? 'transparent' : '#FDF3E8', hasNote: !ok, kind: inf.kind || '', text: inf.text || '' };
         }),
         rSteps: r.steps.map((t, k) => ({ n: k + 1, text: t })),
+        rBg: bgOf(r),
+        cIngs: r.ing.map((i, k) => {
+          const ok = have.has(i.k), done = s.doneIng.includes(k);
+          const note = ok ? '' : (i.s ? 'Swap: use ' + i.sq + ' instead' : i.o ? 'Optional: ' + i.o : 'Pick this up before you start');
+          return { q: i.q, done, mark: done ? '✓' : '', boxBg: done ? '#3E6B4F' : '#FFFFFF', boxBd: done ? '#3E6B4F' : 'rgba(35,28,22,.28)', fg: done ? '#8C8078' : '#231C16', deco: done ? 'line-through' : 'none', hasNote: !ok && !done, note,
+            onToggle: () => this.setState(st => ({ doneIng: st.doneIng.includes(k) ? st.doneIng.filter(x => x !== k) : [...st.doneIng, k] })) };
+        }),
+        cSteps: r.steps.map((t, k) => {
+          const done = s.doneStep.includes(k);
+          return { text: t, done, badge: done ? '✓' : String(k + 1), numBg: done ? '#3E6B4F' : '#231C16', numFg: '#FFFFFF', fg: done ? '#8C8078' : '#3B322A', deco: done ? 'line-through' : 'none',
+            onToggle: () => this.setState(st => ({ doneStep: st.doneStep.includes(k) ? st.doneStep.filter(x => x !== k) : [...st.doneStep, k] })) };
+        }),
+        ingDoneLabel: s.doneIng.length + ' of ' + r.ing.length,
+        stepDoneLabel: s.doneStep.length + ' of ' + r.steps.length + ' done',
+        allDone: s.doneStep.length === r.steps.length,
         rSwaps: miss.map(i => ({ name: i.k, text: this.info(i, have).text })), hasSwaps: miss.length > 0,
         starIcon: fav ? '★' : '☆', starBg: fav ? '#C0522C' : 'rgba(253,250,246,.96)', starFg: fav ? '#FFF7F0' : '#231C16',
         onStar: () => {
@@ -956,7 +1063,10 @@ class Component extends DCLogic {
     const up = s.authMode === 'signup';
     v.isSignup = up;
     v.authTitle = up ? 'Create your account' : 'Welcome back';
-    v.authSub = up ? "It's free. Your account saves two things:" : 'Sign in to pick up where you left off.';
+    v.authSub = up ? '' : 'Sign in to pick up where you left off.';
+    v.hasAuthSub = !!v.authSub;
+    v.authCta = up ? 'Create Account' : 'Sign In';
+    v.submitAuthFn = () => this.submitAuth();
     v.fName = s.form.name; v.fEmail = s.form.email; v.fPass = s.form.password;
     v.onName = e => this.setState({ form: { ...this.state.form, name: e.target.value } });
     v.onEmail = e => this.setState({ form: { ...this.state.form, email: e.target.value } });
@@ -973,16 +1083,33 @@ class Component extends DCLogic {
     v.savedTimeLabel = tl(sv.time);
 
     // Favorites / profile
-    v.favList = s.favs.map(id => RECIPES.find(x => x.id === id)).filter(Boolean).map(f => ({ name: f.name, timeLabel: tl(f.time) + ' total', tintA: f.tint[0], tintB: f.tint[1], onOpen: () => this.go('recipe', { recipeId: f.id }) }));
-    v.hasFavs = s.signedIn && v.favList.length > 0;
-    v.noFavs = s.signedIn && !v.favList.length;
+    const fq = (s.favQuery || '').trim().toLowerCase();
+    const favAll = s.favs.map(id => RECIPES.find(x => x.id === id)).filter(Boolean).map(f => {
+      const miss = f.ing.filter(i => !have.has(i.k));
+      const names = miss.map(i => i.k);
+      return { f, miss: miss.length, name: f.name, timeLabel: tl(f.time) + ' total', bg: bgOf(f),
+        missText: miss.length ? 'Missing ' + miss.length + ': ' + (names.length > 3 ? names.slice(0, 3).join(', ') + ' +' + (names.length - 3) : names.join(', ')) : 'You have everything',
+        missMark: miss.length ? '!' : '✓', missFg: miss.length ? '#9A5A2A' : '#3E6B4F', missBg: miss.length ? '#F7E3CC' : '#E7F0E8',
+        onOpen: () => this.go('recipe', { recipeId: f.id }) };
+    });
+    v.favShown = favAll.filter(x => (!fq || x.name.toLowerCase().includes(fq) || x.f.ing.some(i => i.k.toLowerCase().includes(fq)))
+      && (s.favFilter === 'All' || (s.favFilter === 'Ready to cook' && x.miss === 0) || (s.favFilter === '1–2 missing' && x.miss > 0 && x.miss <= 2) || (s.favFilter === '30 min or less' && x.f.time <= 30)));
+    v.favQuery = s.favQuery || '';
+    v.onFavQuery = e => this.setState({ favQuery: e.target.value });
+    v.favFilters = ['All', 'Ready to cook', '1–2 missing', '30 min or less'].map(l => ({ label: l, ...chip(s.favFilter === l), onPick: () => this.setState({ favFilter: l }) }));
+    v.hasFavs = s.signedIn && favAll.length > 0;
+    v.noFavMatch = v.hasFavs && !v.favShown.length;
+    v.noFavs = s.signedIn && !favAll.length;
     v.favsGuest = !s.signedIn;
+    v.goEditProfile = () => this.go('editProfile', { form: { name: s.user.name, email: s.user.email, password: '' } });
+    v.editInitial = ((s.form.name || s.user.name || 'S').charAt(0) || 'S').toUpperCase();
+    v.saveProfile = () => { const f = this.state.form; this.setState(st => ({ user: { name: f.name.trim() || st.user.name, email: f.email.trim() || st.user.email } })); this.back(); this.toast('Profile updated'); };
     v.goSignup = () => this.go('auth', { authMode: 'signup' });
     v.goSignin = () => this.go('auth', { authMode: 'signin' });
     v.profSavedLabel = s.saved ? plural(s.saved.selected.length + s.saved.staples.length + s.saved.seasonings.length, 'ingredient') + ' · ' + tl(s.saved.time) : 'None saved yet';
     v.onProfSaved = () => (s.saved ? this.go('returning') : this.go('ingredients'));
     v.profFavLabel = plural(s.favs.length, 'recipe') + ' saved';
-    v.signOut = () => { this.top(); this.setState({ signedIn: false, user: { name: '', email: '' }, screen: 'ingredients', hist: [] }); };
+    v.signOut = () => { this.top(); this.setState({ signedIn: false, user: { name: '', email: '' }, screen: 'ingredients', hist: [], tab: 'home', homeSnap: null }); };
 
     // CTA bar
     let cta = null, cta2 = null;
@@ -992,14 +1119,12 @@ class Component extends DCLogic {
         cta = { l: 'Find Dinner', f: () => (s.signedIn && s.saved ? this.go('returning') : this.go('ingredients')) };
         if (!s.signedIn) cta2 = { l: 'Sign In', f: () => this.go('auth', { authMode: 'signin' }) };
         break;
-      case 'ingredients': cta = { l: s.selected.length ? 'Next: basics' : 'Add an ingredient to continue', on: s.selected.length > 0, f: () => this.go('staples') }; break;
+      case 'ingredients': cta = { l: s.selected.length ? 'Next: review' : 'Add an ingredient to continue', on: s.selected.length > 0, f: () => this.go('review') }; break;
       case 'update': cta = { l: 'Save and Find Dinner', on: s.selected.length > 0, f: () => this.go('results', { ...saveSel(), resultsMode: 'updated' }) }; break;
-      case 'staples': cta = { l: 'Review ingredients', f: () => this.go('review') }; break;
       case 'review': cta = { l: 'Next: cooking time', on: total > 0, f: () => this.go('time') }; break;
       case 'time': cta = { l: 'Find Dinner', f: () => this.go('results', { resultsMode: 'new' }) }; break;
-      case 'recipe': cta = { l: 'Make This Tonight', f: () => this.go('cooking') }; break;
+      case 'recipe': cta = { l: 'Make This Tonight', f: () => this.go('cooking', s.cookFor === s.recipeId ? {} : { cookFor: s.recipeId, doneIng: [], doneStep: [] }) }; break;
       case 'cooking': cta = { l: "I'm done cooking", f: () => { if (!s.signedIn) this.setState({ invite: 'save' }); else { this.home(); this.toast('Enjoy your dinner'); } } }; break;
-      case 'auth': cta = { l: up ? 'Create Account' : 'Sign In', f: () => this.submitAuth() }; break;
       case 'acctReview': cta = { l: 'Save Selections', f: () => this.go('savedSel', saveSel()) }; break;
       case 'savedSel':
         cta = { l: 'Find Dinner', f: () => this.go('results', { resultsMode: 'new' }) };
@@ -1022,22 +1147,22 @@ class Component extends DCLogic {
     v.onCta2 = () => cta2 && cta2.f();
 
     // Nav
-    const tab = scr === 'favs' ? 'favs' : scr === 'profile' ? 'profile' : 'home';
+    const tab = s.tab || 'home';
     v.navHomeC = tab === 'home' ? '#C0522C' : '#6E6259';
     v.navFavsC = tab === 'favs' ? '#C0522C' : '#6E6259';
     v.navProfC = tab === 'profile' ? '#C0522C' : '#6E6259';
     v.navHomeFill = tab === 'home' ? 'currentColor' : 'none';
     v.navFavsFill = tab === 'favs' ? 'currentColor' : 'none';
     v.navProfFill = tab === 'profile' ? 'currentColor' : 'none';
-    v.navHome = () => this.home();
-    v.navFavs = () => { if (scr !== 'favs') this.go('favs'); };
-    v.navProfile = () => { if (scr !== 'profile') this.go('profile'); };
+    v.navHome = () => this.switchTab('home');
+    v.navFavs = () => this.switchTab('favs');
+    v.navProfile = () => this.switchTab('profile');
 
     // Toast
     v.hasToast = !!s.toast;
     v.toastMsg = s.toast ? s.toast.msg : '';
     v.toastHasAction = !!(s.toast && s.toast.action);
-    v.toastAction = () => { this.setState({ toast: null }); this.go('favs'); };
+    v.toastAction = () => { this.setState({ toast: null }); this.switchTab('favs'); };
     v.toastBottom = cta ? 150 : 84;
     return v;
   }
