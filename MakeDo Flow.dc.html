@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:#EFE7DC;font-family:Manrope,system-ui,sans-serif;color:#231C16}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+input{font-family:inherit}
+input:focus{outline:none}
+a{color:#C0522C}a:hover{color:#9C3F20}
+@keyframes dfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes dsheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+</style></helmet>
+<div style="min-height:100dvh;display:flex;justify-content:center;background:#EFE7DC">
+<div style="width:100%;max-width:430px;min-height:100dvh;background:#FDFAF6;box-shadow:0 0 0 1px rgba(35,28,22,.07),0 18px 50px rgba(35,28,22,.13);position:relative;overflow:hidden">
+
+<sc-if value="{{ sWelcome }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="01 Welcome" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="padding:56px 24px 34px;background:linear-gradient(180deg,#FDFAF6 0%,#FAF1E6 100%)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:38px">
+      <div style="width:10px;height:10px;border-radius:50%;background:#C0522C"></div>
+      <div style="font:700 14px/1 Manrope,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6C5F53">MakeDo</div>
+    </div>
+    <sc-if value="{{ isGuest }}" hint-placeholder-val="{{ true }}">
+      <h1 style="margin:0;font:400 44px/1.04 'Instrument Serif',Georgia,serif;letter-spacing:-.01em;color:#231C16;text-wrap:pretty">Dinner from what you <em style="font-style:italic;color:#C0522C">already have.</em></h1>
+      <p style="margin:16px 0 0;max-width:340px;font:400 15.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">Tell MakeDo what's in your kitchen and how much time you've got. You'll get three dinners you can make tonight.</p>
+    </sc-if>
+    <sc-if value="{{ isSigned }}">
+      <h1 style="margin:0;font:400 44px/1.04 'Instrument Serif',Georgia,serif;letter-spacing:-.01em;color:#231C16;text-wrap:pretty">Welcome back, <em style="font-style:italic;color:#C0522C">{{ userName }}.</em></h1>
+      <p style="margin:16px 0 0;max-width:340px;font:400 15.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">Your ingredients are saved. Check they're still in your kitchen and we'll find tonight's dinner.</p>
+    </sc-if>
+  </div>
+  <div style="padding:26px 24px 0">
+    <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6B;margin-bottom:14px">How it works</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <sc-for list="{{ howSteps }}" as="h" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:14px">
+          <span style="width:30px;height:30px;flex:none;border-radius:50%;background:#231C16;color:#FDFAF6;font:700 13px/30px Manrope,sans-serif;text-align:center">{{ h.n }}</span>
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 15px/1.25 Manrope,sans-serif;color:#231C16">{{ h.t }}</span><span style="font:500 13px/1.35 Manrope,sans-serif;color:#8A7A6B">{{ h.d }}</span></span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sEditor }}">
+<div data-screen-label="Ingredient entry" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+    <span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ stepLabel }}</span>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16;text-wrap:pretty">{{ editorTitle }}</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">{{ editorSub }}</p>
+  </div>
+  <div style="padding:18px 20px 0">
+    <div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1.5px solid rgba(35,28,22,.16);border-radius:14px;padding:0 14px;height:50px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A7A6B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search all ingredients" style="flex:1;min-width:0;border:0;background:transparent;font:500 15px/1 Manrope,sans-serif;color:#231C16;height:100%">
+      <sc-if value="{{ hasQuery }}"><button onClick="{{ clearQuery }}" style="font:600 13px/1 Manrope,sans-serif;color:#8A7A6B;padding:8px 0 8px 6px">Clear</button></sc-if>
+    </div>
+  </div>
+  <div style="padding:14px 20px 0">
+    <div style="background:#FAF1E6;border-radius:16px;padding:14px 14px 15px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+        <span style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6C5F53">Your ingredients</span>
+        <span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ selCountLabel }}</span>
+      </div>
+      <sc-if value="{{ hasSelected }}">
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <sc-for list="{{ tray }}" as="t" hint-placeholder-count="3">
+            <button onClick="{{ t.onRemove }}" aria-label="Remove" style="display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;border-radius:100px;font:600 13.5px/1 Manrope,sans-serif;color:#231C16;transition:all .18s ease;background:{{ t.bg }};border:1.5px solid {{ t.bd }}">{{ t.label }}<span style="font:500 13px/1 Manrope,sans-serif;color:#8A7A6B">✕</span></button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noSelected }}">
+        <div style="font:500 13.5px/1.45 Manrope,sans-serif;color:#8A7A6B">Nothing yet. Open a category below or search.</div>
+      </sc-if>
+    </div>
+  </div>
+  <sc-if value="{{ hasQuery }}">
+    <div style="padding:18px 20px 0">
+      <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6B;margin-bottom:10px">{{ resultsLabel }}</div>
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
+        <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="4">
+          <button onClick="{{ r.onToggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border-bottom:1px solid rgba(35,28,22,.06);min-height:56px">
+            <span style="display:flex;flex-direction:column;align-items:flex-start;gap:3px"><span style="font:700 15px/1.2 Manrope,sans-serif;color:#231C16">{{ r.name }}</span><span style="font:500 12px/1.2 Manrope,sans-serif;color:#8A7A6B">{{ r.cat }}</span></span>
+            <span style="padding:8px 12px;border-radius:100px;font:700 12.5px/1 Manrope,sans-serif;background:{{ r.pillBg }};color:{{ r.pillFg }}">{{ r.action }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noResults }}">
+        <div style="font:500 13.5px/1.5 Manrope,sans-serif;color:#8A7A6B;padding:6px 2px">No ingredients match. Try a shorter word.</div>
+      </sc-if>
+    </div>
+  </sc-if>
+  <sc-if value="{{ noQuery }}">
+    <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+      <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6B">Browse by category</div>
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+        <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
+          <button onClick="{{ c.onToggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;min-height:62px">
+            <span style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left"><span style="font:700 15.5px/1.2 Manrope,sans-serif;color:#231C16">{{ c.name }}</span><span style="font:500 12.5px/1.3 Manrope,sans-serif;color:#8A7A6B">{{ c.hint }}</span></span>
+            <span style="display:flex;align-items:center;gap:10px;flex:none">
+              <sc-if value="{{ c.hasCount }}"><span style="padding:6px 9px;border-radius:100px;background:#231C16;color:#FDFAF6;font:700 11.5px/1 Manrope,sans-serif">{{ c.countLabel }}</span></sc-if>
+              <span style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(35,28,22,.14);font:500 16px/26px Manrope,sans-serif;text-align:center;color:#6C5F53">{{ c.caret }}</span>
+            </span>
+          </button>
+          <sc-if value="{{ c.open }}">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;padding:2px 16px 16px;animation:dfade .2s ease both">
+              <sc-for list="{{ c.items }}" as="i" hint-placeholder-count="6">
+                <button onClick="{{ i.onPick }}" style="padding:11px 14px;border-radius:100px;font:600 14px/1 Manrope,sans-serif;transition:all .16s ease;border:1.5px solid {{ i.bd }};background:{{ i.bg }};color:{{ i.fg }}">{{ i.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ showEditorTime }}">
+    <div style="padding:16px 20px 0">
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;padding:16px">
+        <div style="font:700 15px/1.2 Manrope,sans-serif;color:#231C16;margin-bottom:12px">Cooking time</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <sc-for list="{{ timeChips }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onPick }}" style="padding:14px 2px;border-radius:12px;font:700 14px/1 Manrope,sans-serif;transition:all .16s ease;border:1.5px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sStaples }}">
+<div data-screen-label="Basics" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+    <span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ stepLabel }}</span>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Have these basics?</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">Most recipes lean on them. Check only what's in your kitchen right now.</p>
+  </div>
+  <div style="padding:18px 20px 0">
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:18px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(35,28,22,.07);background:#FBF6EF">
+        <span style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6C5F53">Basics</span>
+        <button onClick="{{ onSelectAll }}" style="font:700 13.5px/1 Manrope,sans-serif;color:#C0522C;padding:8px 0">{{ selectAllLabel }}</button>
+      </div>
+      <sc-for list="{{ stapleRows }}" as="r" hint-placeholder-count="3">
+        <button onClick="{{ r.onToggle }}" style="width:100%;display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid rgba(35,28,22,.06);text-align:left;min-height:62px">
+          <span style="width:24px;height:24px;flex:none;border-radius:7px;font:700 14px/22px Manrope,sans-serif;text-align:center;transition:all .15s ease;background:{{ r.boxBg }};border:1.5px solid {{ r.boxBd }};color:#FDFAF6">{{ r.mark }}</span>
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 15.5px/1.2 Manrope,sans-serif;color:#231C16">{{ r.name }}</span><span style="font:500 12.5px/1.3 Manrope,sans-serif;color:#8A7A6B">{{ r.note }}</span></span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+  <sc-if value="{{ anyStaple }}">
+    <div style="padding:14px 20px 0;animation:dfade .25s ease both">
+      <div style="background:#FFFFFF;border:1px dashed rgba(35,28,22,.22);border-radius:18px">
+        <button onClick="{{ toggleSeason }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 16px;min-height:62px">
+          <span style="display:flex;flex-direction:column;align-items:flex-start;gap:3px"><span style="font:700 15px/1.2 Manrope,sans-serif;color:#231C16">Add seasonings</span><span style="font:500 12.5px/1.3 Manrope,sans-serif;color:#8A7A6B">{{ seasonSubLabel }}</span></span>
+          <span style="padding:8px 12px;border-radius:100px;border:1px solid rgba(35,28,22,.16);font:700 12.5px/1 Manrope,sans-serif;color:#231C16">{{ seasonToggleLabel }}</span>
+        </button>
+        <sc-if value="{{ seasonOpen }}">
+          <div style="padding:0 16px 16px;animation:dfade .2s ease both">
+            <div style="display:flex;align-items:center;gap:10px;background:#FBF6EF;border:1px solid rgba(35,28,22,.10);border-radius:12px;padding:0 12px;height:44px;margin-bottom:12px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A7A6B" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              <input value="{{ seasonQuery }}" onChange="{{ onSeasonQuery }}" placeholder="Search seasonings" style="flex:1;min-width:0;border:0;background:transparent;font:500 14px/1 Manrope,sans-serif;color:#231C16;height:100%">
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px">
+              <sc-for list="{{ seasonChips }}" as="i" hint-placeholder-count="8">
+                <button onClick="{{ i.onPick }}" style="padding:10px 13px;border-radius:100px;font:600 13.5px/1 Manrope,sans-serif;transition:all .16s ease;border:1.5px solid {{ i.bd }};background:{{ i.bg }};color:{{ i.fg }}">{{ i.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ noSeasonMatch }}"><div style="font:500 13px/1.4 Manrope,sans-serif;color:#8A7A6B">No seasonings match.</div></sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sReview }}">
+<div data-screen-label="14 Review ingredients" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+    <span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ stepLabel }}</span>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Review your ingredients</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53">{{ totalLabel }} Remove anything you've run out of.</p>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ reviewGroups }}" as="g" hint-placeholder-count="4">
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
+        <div style="padding:11px 16px;background:#FBF6EF;border-bottom:1px solid rgba(35,28,22,.06);font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6C5F53">{{ g.label }}</div>
+        <sc-for list="{{ g.items }}" as="i" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px 6px 16px;border-bottom:1px solid rgba(35,28,22,.05)">
+            <span style="font:600 15px/1.2 Manrope,sans-serif;color:#231C16">{{ i.name }}</span>
+            <button onClick="{{ i.onRemove }}" aria-label="Remove" style="width:44px;height:44px;border-radius:50%;font:500 15px/1 Manrope,sans-serif;color:#8A7A6B" style-hover="background:#F3E9DC;color:#C0522C">✕</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+    <button onClick="{{ addMore }}" style="padding:15px;border-radius:14px;border:1.5px dashed rgba(35,28,22,.22);font:700 14.5px/1 Manrope,sans-serif;color:#C0522C">+ Add more ingredients</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sTime }}">
+<div data-screen-label="15 Cooking time" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+    <span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ stepLabel }}</span>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">How much time do you have?</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53">Start to finish, including prep.</p>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ timeRows }}" as="t" hint-placeholder-count="4">
+      <button onClick="{{ t.onPick }}" style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:16px;text-align:left;transition:all .16s ease;background:{{ t.bg }};border:1.5px solid {{ t.bd }}">
+        <span style="display:flex;flex-direction:column;gap:3px"><span style="font:700 17px/1.2 Manrope,sans-serif;color:#231C16">{{ t.label }}</span><span style="font:500 13px/1.3 Manrope,sans-serif;color:#8A7A6B">{{ t.desc }}</span></span>
+        <span style="width:22px;height:22px;border-radius:50%;flex:none;border:2px solid {{ t.dotBd }};box-shadow:inset 0 0 0 4px #FFFFFF;background:{{ t.dotBg }}"></span>
+      </button>
+    </sc-for>
+  </div>
+  <div style="padding:18px 20px 0">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#FAF1E6;border-radius:14px;padding:14px 16px">
+      <span style="font:600 13.5px/1.4 Manrope,sans-serif;color:#6C5F53">{{ timeSummary }}</span>
+      <button onClick="{{ editIngr }}" style="font:700 13.5px/1 Manrope,sans-serif;color:#C0522C;padding:8px 0;flex:none">Edit</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sResults }}">
+<div data-screen-label="Dinner recommendations" style="animation:dfade .3s ease both;padding:0 0 110px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+    <button onClick="{{ editFromResults }}" style="padding:10px 0;font:700 13.5px/1 Manrope,sans-serif;color:#6C5F53">Edit ingredients</button>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 32px/1.08 'Instrument Serif',Georgia,serif;color:#231C16;text-wrap:pretty">{{ resultsTitle }}</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+      <sc-for list="{{ criteria }}" as="c" hint-placeholder-count="2">
+        <span style="padding:7px 10px;border-radius:8px;background:#F3E9DC;font:600 12.5px/1 Manrope,sans-serif;color:#6C5F53">{{ c }}</span>
+      </sc-for>
+    </div>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:16px">
+    <sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:20px;overflow:hidden;box-shadow:0 3px 10px rgba(35,28,22,.05)">
+        <div style="height:136px;position:relative;background:repeating-linear-gradient(135deg,{{ o.tintA }} 0 12px,{{ o.tintB }} 12px 24px);display:flex;align-items:flex-end;justify-content:space-between;padding:12px">
+          <span style="font:400 10.5px/1.3 'IBM Plex Mono',monospace;color:rgba(35,28,22,.55);background:rgba(255,255,255,.85);border-radius:6px;padding:5px 8px">photo: {{ o.photo }}</span>
+          <span style="font:700 13px/1 Manrope,sans-serif;color:#231C16;background:#FFFFFF;border-radius:100px;padding:8px 12px">{{ o.timeLabel }}</span>
+        </div>
+        <div style="padding:15px 16px 16px">
+          <div style="font:700 18.5px/1.25 Manrope,sans-serif;color:#231C16;text-wrap:pretty">{{ o.name }}</div>
+          <div style="font:500 13px/1.45 Manrope,sans-serif;color:#8A7A6B;margin-top:5px">{{ o.blurb }}</div>
+          <div style="margin-top:13px;background:#FBF6EF;border-radius:13px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:9px;padding:12px;font:700 13.5px/1.25 Manrope,sans-serif;color:#3E6B4F"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:#E7F0E8;font:700 11px/20px Manrope,sans-serif;text-align:center">✓</span>{{ o.haveLabel }}</div>
+            <div style="height:1px;background:rgba(35,28,22,.07);margin:0 12px"></div>
+            <sc-if value="{{ o.hasMissing }}">
+              <button onClick="{{ o.onMissing }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px;min-height:46px">
+                <span style="display:flex;align-items:center;gap:9px;font:700 13.5px/1.25 Manrope,sans-serif;color:#9A5A2A"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:#F7E3CC;font:700 12px/20px Manrope,sans-serif;text-align:center">!</span>{{ o.missingLabel }}</span>
+                <span style="font:700 12.5px/1 Manrope,sans-serif;color:#C0522C">See swaps ›</span>
+              </button>
+            </sc-if>
+            <sc-if value="{{ o.noMissing }}">
+              <div style="display:flex;align-items:center;gap:9px;padding:12px;font:700 13.5px/1.25 Manrope,sans-serif;color:#3E6B4F"><span style="width:20px;height:20px;flex:none;border-radius:50%;background:#E7F0E8;font:700 11px/20px Manrope,sans-serif;text-align:center">✓</span>Nothing missing</div>
+            </sc-if>
+          </div>
+          <button onClick="{{ o.onView }}" style="width:100%;margin-top:13px;padding:15px;border-radius:13px;background:#231C16;color:#FDFAF6;font:700 15px/1 Manrope,sans-serif" style-hover="opacity:.9">View recipe</button>
+        </div>
+      </div>
+    </sc-for>
+    <div style="text-align:center;font:500 12.5px/1.5 Manrope,sans-serif;color:#8A7A6B;padding:2px 20px 0">Ranked by fewest missing ingredients.</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sRecipe }}">
+<div data-screen-label="Recipe overview" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="height:220px;position:relative;background:repeating-linear-gradient(135deg,{{ rTintA }} 0 14px,{{ rTintB }} 14px 28px)">
+    <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px">
+      <button onClick="{{ back }}" style="padding:12px 15px;border-radius:100px;background:rgba(253,250,246,.96);font:700 13.5px/1 Manrope,sans-serif;color:#231C16;box-shadow:0 2px 8px rgba(35,28,22,.12)">← Back</button>
+      <button onClick="{{ onStar }}" aria-label="Save recipe" style="width:46px;height:46px;border-radius:50%;font:400 22px/1 Manrope,sans-serif;box-shadow:0 2px 8px rgba(35,28,22,.12);transition:all .16s ease;background:{{ starBg }};color:{{ starFg }}">{{ starIcon }}</button>
+    </div>
+    <span style="position:absolute;bottom:12px;left:16px;font:400 10.5px/1.3 'IBM Plex Mono',monospace;color:rgba(35,28,22,.55);background:rgba(255,255,255,.85);border-radius:6px;padding:5px 8px">photo: {{ rPhoto }}</span>
+  </div>
+  <div style="padding:20px 20px 0">
+    <h1 style="margin:0;font:400 32px/1.08 'Instrument Serif',Georgia,serif;color:#231C16;text-wrap:pretty">{{ rName }}</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:13px">
+      <sc-for list="{{ rMeta }}" as="m" hint-placeholder-count="3">
+        <span style="padding:7px 11px;border-radius:8px;background:#F3E9DC;font:600 12.5px/1 Manrope,sans-serif;color:#6C5F53">{{ m }}</span>
+      </sc-for>
+    </div>
+    <p style="margin:14px 0 0;font:400 14.5px/1.6 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">{{ rBlurb }}</p>
+  </div>
+  <div style="padding:20px 20px 0">
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:18px;padding:16px 14px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px;margin-bottom:10px">
+        <div style="font:700 16px/1.2 Manrope,sans-serif;color:#231C16">Ingredients</div>
+        <div style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8A7A6B">{{ rIngCount }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <sc-for list="{{ rIngs }}" as="i" hint-placeholder-count="6">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 6px;border-radius:10px;background:{{ i.rowBg }}">
+            <span style="width:20px;height:20px;flex:none;border-radius:50%;font:700 11px/20px Manrope,sans-serif;text-align:center;background:{{ i.markBg }};color:{{ i.markFg }}">{{ i.mark }}</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font:500 14.5px/1.35 Manrope,sans-serif;color:#231C16">{{ i.q }}</span>
+              <sc-if value="{{ i.hasNote }}"><span style="font:600 12.5px/1.4 Manrope,sans-serif;color:#9A5A2A">{{ i.kind }} · {{ i.text }}</span></sc-if>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sCooking }}">
+<div data-screen-label="19 Dinner selected" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Recipe</button>
+  </div>
+  <div style="padding:10px 20px 0">
+    <div style="background:#E7F0E8;border-radius:18px;padding:18px">
+      <div style="display:flex;align-items:center;gap:8px;font:700 12px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#3E6B4F"><span style="width:20px;height:20px;border-radius:50%;background:#3E6B4F;color:#E7F0E8;font:700 11px/20px Manrope,sans-serif;text-align:center">✓</span>Tonight's dinner</div>
+      <div style="font:400 30px/1.1 'Instrument Serif',Georgia,serif;color:#231C16;margin-top:10px;text-wrap:pretty">{{ rName }}</div>
+      <div style="font:600 13.5px/1.3 Manrope,sans-serif;color:#3E6B4F;margin-top:6px">{{ rTimeLabel }} · {{ rStepCount }}</div>
+    </div>
+  </div>
+  <sc-if value="{{ hasSwaps }}">
+    <div style="padding:14px 20px 0">
+      <div style="background:#FDF3E8;border-radius:16px;padding:14px 16px">
+        <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9A5A2A;margin-bottom:8px">Your swaps</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <sc-for list="{{ rSwaps }}" as="w" hint-placeholder-count="2">
+            <div style="font:500 13.5px/1.45 Manrope,sans-serif;color:#3B322A"><strong style="font-weight:700">{{ w.name }}:</strong> {{ w.text }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <div style="padding:14px 20px 0">
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:18px;padding:18px">
+      <div style="font:700 16px/1.2 Manrope,sans-serif;color:#231C16;margin-bottom:16px">How to make it</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ rSteps }}" as="st" hint-placeholder-count="4">
+          <div style="display:flex;gap:12px">
+            <span style="width:26px;height:26px;flex:none;border-radius:50%;background:#231C16;color:#FDFAF6;font:700 12.5px/26px Manrope,sans-serif;text-align:center">{{ st.n }}</span>
+            <span style="font:400 15px/1.55 Manrope,sans-serif;color:#3B322A;text-wrap:pretty;padding-top:2px">{{ st.text }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sAuth }}">
+<div data-screen-label="21 Create account" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+  </div>
+  <div style="padding:10px 20px 0">
+    <h1 style="margin:0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">{{ authTitle }}</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">{{ authSub }}</p>
+  </div>
+  <sc-if value="{{ isSignup }}">
+    <div style="padding:16px 20px 0">
+      <div style="background:#FAF1E6;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px;font:600 13.5px/1.4 Manrope,sans-serif;color:#3B322A"><span style="color:#3E6B4F;font-weight:700">✓</span>Your ingredient selections, so next time starts where you left off</div>
+        <div style="display:flex;gap:10px;font:600 13.5px/1.4 Manrope,sans-serif;color:#3B322A"><span style="color:#3E6B4F;font-weight:700">✓</span>Recipes you star, in one Favorites list</div>
+      </div>
+    </div>
+  </sc-if>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:14px">
+    <sc-if value="{{ isSignup }}">
+      <label style="display:flex;flex-direction:column;gap:7px"><span style="font:700 13px/1 Manrope,sans-serif;color:#231C16">First name</span><input value="{{ fName }}" onChange="{{ onName }}" placeholder="Sam" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:500 15px/1 Manrope,sans-serif;color:#231C16"></label>
+    </sc-if>
+    <label style="display:flex;flex-direction:column;gap:7px"><span style="font:700 13px/1 Manrope,sans-serif;color:#231C16">Email</span><input value="{{ fEmail }}" onChange="{{ onEmail }}" placeholder="you@example.com" type="email" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:500 15px/1 Manrope,sans-serif;color:#231C16"></label>
+    <label style="display:flex;flex-direction:column;gap:7px"><span style="font:700 13px/1 Manrope,sans-serif;color:#231C16">Password</span><input value="{{ fPass }}" onChange="{{ onPass }}" placeholder="At least 8 characters" type="password" style="height:50px;border-radius:12px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;padding:0 14px;font:500 15px/1 Manrope,sans-serif;color:#231C16"></label>
+    <div style="display:flex;justify-content:center;gap:6px;font:500 13.5px/1.4 Manrope,sans-serif;color:#6C5F53;padding-top:4px"><span>{{ switchLabel }}</span><button onClick="{{ switchAuth }}" style="font:700 13.5px/1.4 Manrope,sans-serif;color:#C0522C">{{ switchCta }}</button></div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sAcct }}">
+<div data-screen-label="22 Review selections" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="padding:26px 20px 0">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:100px;background:#E7F0E8;font:700 13px/1 Manrope,sans-serif;color:#3E6B4F">✓ Account created · Welcome, {{ userName }}</div>
+    <h1 style="margin:18px 0 0;font:400 34px/1.08 'Instrument Serif',Georgia,serif;color:#231C16;text-wrap:pretty">Here's what you entered</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">We carried your selections over. Save them and next time starts right here.</p>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ acctGroups }}" as="g" hint-placeholder-count="3">
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;padding:13px 14px 14px">
+        <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6C5F53;margin-bottom:9px">{{ g.label }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ g.items }}" as="i" hint-placeholder-count="3"><span style="padding:8px 11px;border-radius:100px;background:#FAF1E6;font:600 13px/1 Manrope,sans-serif;color:#231C16">{{ i.name }}</span></sc-for></div>
+      </div>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#FAF1E6;border-radius:14px;padding:14px 16px">
+      <span style="font:600 14px/1.3 Manrope,sans-serif;color:#231C16">Cooking time: {{ timeLabel }}</span>
+      <button onClick="{{ editBeforeSave }}" style="font:700 13.5px/1 Manrope,sans-serif;color:#C0522C;padding:8px 0">Edit</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sSavedSel }}">
+<div data-screen-label="23 Selections saved" style="animation:dfade .3s ease both;padding:70px 28px 200px;display:flex;flex-direction:column;align-items:center;text-align:center">
+  <div style="width:84px;height:84px;border-radius:50%;background:#E7F0E8;color:#3E6B4F;font:700 38px/84px Manrope,sans-serif">✓</div>
+  <h1 style="margin:24px 0 0;font:400 36px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Selections saved</h1>
+  <p style="margin:12px 0 0;max-width:300px;font:400 15px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">Next time you open MakeDo, we'll start with your {{ totalCount }} ingredients and {{ timeLabel }} cooking time.</p>
+</div>
+</sc-if>
+
+<sc-if value="{{ sReturning }}">
+<div data-screen-label="24 Still have these?" style="animation:dfade .3s ease both;padding:0 0 200px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;min-height:52px">
+    <button onClick="{{ back }}" style="padding:10px 4px 10px 0;font:700 14px/1 Manrope,sans-serif;color:#C0522C">← Back</button>
+  </div>
+  <div style="padding:10px 20px 0">
+    <div style="font:700 12px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6B">Welcome back, {{ userName }}</div>
+    <h1 style="margin:10px 0 0;font:400 36px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Still have these?</h1>
+    <p style="margin:10px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">Your saved ingredients from last time. Use them as-is, or update what's changed.</p>
+  </div>
+  <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ retGroups }}" as="g" hint-placeholder-count="3">
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;padding:13px 14px 14px">
+        <div style="font:700 11.5px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6C5F53;margin-bottom:9px">{{ g.label }}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ g.items }}" as="i" hint-placeholder-count="3"><span style="padding:8px 11px;border-radius:100px;background:#FAF1E6;font:600 13px/1 Manrope,sans-serif;color:#231C16">{{ i.name }}</span></sc-for></div>
+      </div>
+    </sc-for>
+    <div style="background:#FAF1E6;border-radius:14px;padding:14px 16px;font:600 14px/1.3 Manrope,sans-serif;color:#231C16">Cooking time: {{ savedTimeLabel }}</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sFavs }}">
+<div data-screen-label="28 Favorites" style="animation:dfade .3s ease both;padding:0 0 110px">
+  <div style="padding:34px 20px 0">
+    <h1 style="margin:0;font:400 36px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Favorites</h1>
+    <p style="margin:8px 0 0;font:400 14.5px/1.55 Manrope,sans-serif;color:#6C5F53">Recipes you've saved.</p>
+  </div>
+  <sc-if value="{{ hasFavs }}">
+    <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ favList }}" as="f" hint-placeholder-count="3">
+        <button onClick="{{ f.onOpen }}" style="display:flex;align-items:center;gap:14px;padding:10px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(35,28,22,.08);text-align:left">
+          <span style="width:64px;height:64px;flex:none;border-radius:12px;background:repeating-linear-gradient(135deg,{{ f.tintA }} 0 8px,{{ f.tintB }} 8px 16px)"></span>
+          <span style="flex:1;display:flex;flex-direction:column;gap:4px"><span style="font:700 15.5px/1.25 Manrope,sans-serif;color:#231C16">{{ f.name }}</span><span style="font:500 12.5px/1.2 Manrope,sans-serif;color:#8A7A6B">{{ f.timeLabel }}</span></span>
+          <span style="font:500 18px/1 Manrope,sans-serif;color:#C0522C;padding-right:6px">›</span>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ noFavs }}">
+    <div style="margin:22px 20px 0;padding:22px;border-radius:18px;border:1.5px dashed rgba(35,28,22,.2);text-align:center;font:500 14px/1.55 Manrope,sans-serif;color:#6C5F53">No saved recipes yet. Tap ☆ on any recipe to save it here.</div>
+  </sc-if>
+  <sc-if value="{{ favsGuest }}">
+    <div style="margin:22px 20px 0;padding:22px 20px;border-radius:18px;background:#FAF1E6">
+      <div style="font:700 16px/1.3 Manrope,sans-serif;color:#231C16">Save recipes you love</div>
+      <div style="font:500 14px/1.5 Manrope,sans-serif;color:#6C5F53;margin-top:6px">Create a free account to keep favorites and your ingredient list.</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button onClick="{{ goSignin }}" style="flex:1;padding:14px;border-radius:13px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;font:700 14.5px/1 Manrope,sans-serif;color:#231C16">Sign In</button>
+        <button onClick="{{ goSignup }}" style="flex:1.3;padding:14px;border-radius:13px;background:#C0522C;color:#FFF7F0;font:700 14.5px/1 Manrope,sans-serif">Create Account</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ sProfile }}">
+<div data-screen-label="Profile" style="animation:dfade .3s ease both;padding:0 0 110px">
+  <div style="padding:34px 20px 0">
+    <h1 style="margin:0;font:400 36px/1.08 'Instrument Serif',Georgia,serif;color:#231C16">Profile</h1>
+  </div>
+  <sc-if value="{{ isSigned }}">
+    <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:#FAF1E6">
+        <span style="width:52px;height:52px;border-radius:50%;background:#C0522C;color:#FFF7F0;font:700 20px/52px Manrope,sans-serif;text-align:center">{{ userInitial }}</span>
+        <span style="display:flex;flex-direction:column;gap:3px"><span style="font:700 16px/1.2 Manrope,sans-serif;color:#231C16">{{ userName }}</span><span style="font:500 13px/1.2 Manrope,sans-serif;color:#6C5F53">{{ userEmail }}</span></span>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
+        <button onClick="{{ onProfSaved }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid rgba(35,28,22,.06);text-align:left">
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font:700 15px/1.2 Manrope,sans-serif;color:#231C16">Saved ingredients</span><span style="font:500 12.5px/1.2 Manrope,sans-serif;color:#8A7A6B">{{ profSavedLabel }}</span></span><span style="font:500 18px/1 Manrope,sans-serif;color:#C0522C">›</span>
+        </button>
+        <button onClick="{{ navFavs }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px;text-align:left">
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font:700 15px/1.2 Manrope,sans-serif;color:#231C16">Favorites</span><span style="font:500 12.5px/1.2 Manrope,sans-serif;color:#8A7A6B">{{ profFavLabel }}</span></span><span style="font:500 18px/1 Manrope,sans-serif;color:#C0522C">›</span>
+        </button>
+      </div>
+      <button onClick="{{ signOut }}" style="padding:15px;border-radius:13px;border:1.5px solid rgba(35,28,22,.16);font:700 14.5px/1 Manrope,sans-serif;color:#6C5F53">Sign out</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isGuest }}">
+    <div style="margin:18px 20px 0;padding:22px 20px;border-radius:18px;background:#FAF1E6">
+      <div style="font:700 16px/1.3 Manrope,sans-serif;color:#231C16">You're cooking as a guest</div>
+      <div style="font:500 14px/1.5 Manrope,sans-serif;color:#6C5F53;margin-top:6px">An account saves your ingredients and favorite recipes, so next time is faster.</div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button onClick="{{ goSignin }}" style="flex:1;padding:14px;border-radius:13px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;font:700 14.5px/1 Manrope,sans-serif;color:#231C16">Sign In</button>
+        <button onClick="{{ goSignup }}" style="flex:1.3;padding:14px;border-radius:13px;background:#C0522C;color:#FFF7F0;font:700 14.5px/1 Manrope,sans-serif">Create Account</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;pointer-events:none">
+  <div style="width:100%;max-width:430px;pointer-events:auto">
+    <sc-if value="{{ hasCta }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:14px 20px 12px;background:linear-gradient(180deg,rgba(253,250,246,0) 0%,#FDFAF6 38%);display:flex;gap:10px">
+        <sc-if value="{{ hasCta2 }}">
+          <button onClick="{{ onCta2 }}" style="flex:1;padding:17px 10px;border-radius:15px;border:1.5px solid rgba(35,28,22,.18);background:#FFFFFF;font:700 15.5px/1 Manrope,sans-serif;color:#231C16">{{ cta2Label }}</button>
+        </sc-if>
+        <button onClick="{{ onCta }}" style="flex:1.6;padding:17px 10px;border-radius:15px;font:700 16.5px/1 Manrope,sans-serif;transition:all .16s ease;background:{{ ctaBg }};color:{{ ctaFg }};box-shadow:{{ ctaShadow }}">{{ ctaLabel }}</button>
+      </div>
+    </sc-if>
+    <nav style="display:grid;grid-template-columns:repeat(3,1fr);background:#FFFFFF;border-top:1px solid rgba(35,28,22,.09);padding:6px 8px 10px">
+      <button onClick="{{ navHome }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;min-height:52px;color:{{ navHomeC }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3.5 10.5 12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"></path></svg>
+        <span style="font:700 11.5px/1 Manrope,sans-serif">Home</span>
+      </button>
+      <button onClick="{{ navFavs }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;min-height:52px;color:{{ navFavsC }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"></path></svg>
+        <span style="font:700 11.5px/1 Manrope,sans-serif">Favorites</span>
+      </button>
+      <button onClick="{{ navProfile }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;min-height:52px;color:{{ navProfC }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"></path></svg>
+        <span style="font:700 11.5px/1 Manrope,sans-serif">Profile</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<sc-if value="{{ hasToast }}">
+  <div style="position:fixed;left:0;right:0;z-index:30;display:flex;justify-content:center;pointer-events:none;bottom:{{ toastBottom }}px">
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:14px;background:#231C16;color:#FDFAF6;box-shadow:0 8px 24px rgba(35,28,22,.25);pointer-events:auto;animation:dsheet .25s ease both;max-width:390px;margin:0 20px">
+      <span style="font:600 14px/1.3 Manrope,sans-serif">{{ toastMsg }}</span>
+      <sc-if value="{{ toastHasAction }}"><button onClick="{{ toastAction }}" style="font:700 14px/1 Manrope,sans-serif;color:#F2A987;padding:6px 0;flex:none">View</button></sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ sheetOpen }}">
+  <div data-screen-label="17 Missing ingredients" style="position:fixed;inset:0;z-index:40;display:flex;justify-content:center;align-items:flex-end">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(35,28,22,.42)"></div>
+    <div style="position:relative;width:100%;max-width:430px;max-height:86dvh;overflow:auto;background:#FDFAF6;border-radius:24px 24px 0 0;padding:10px 20px 26px;animation:dsheet .28s ease both">
+      <div style="width:40px;height:4px;border-radius:4px;background:rgba(35,28,22,.18);margin:0 auto 16px"></div>
+      <div style="font:700 12px/1.2 Manrope,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9A5A2A">{{ sheetCount }}</div>
+      <div style="font:400 28px/1.12 'Instrument Serif',Georgia,serif;color:#231C16;margin-top:8px;text-wrap:pretty">{{ sheetName }}</div>
+      <p style="margin:8px 0 0;font:500 13.5px/1.5 Manrope,sans-serif;color:#6C5F53">Here's how to make it anyway.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+        <sc-for list="{{ sheetItems }}" as="m" hint-placeholder-count="2">
+          <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.09);border-radius:14px;padding:13px 14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="font:700 15px/1.3 Manrope,sans-serif;color:#231C16">{{ m.q }}</span>
+              <span style="flex:none;padding:6px 9px;border-radius:7px;font:700 11.5px/1 Manrope,sans-serif;background:{{ m.kindBg }};color:{{ m.kindFg }}">{{ m.kind }}</span>
+            </div>
+            <div style="font:500 13.5px/1.45 Manrope,sans-serif;color:#3B322A;margin-top:6px">{{ m.text }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <button onClick="{{ closeSheet }}" style="flex:1;padding:16px;border-radius:14px;border:1.5px solid rgba(35,28,22,.16);background:#FFFFFF;font:700 15px/1 Manrope,sans-serif;color:#231C16">Close</button>
+        <button onClick="{{ sheetView }}" style="flex:1.5;padding:16px;border-radius:14px;background:#C0522C;color:#FFF7F0;font:700 15px/1 Manrope,sans-serif">View recipe</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ inviteOpen }}">
+  <div data-screen-label="20 Save invitation" style="position:fixed;inset:0;z-index:40;display:flex;justify-content:center;align-items:flex-end">
+    <div onClick="{{ inviteLater }}" style="position:absolute;inset:0;background:rgba(35,28,22,.42)"></div>
+    <div style="position:relative;width:100%;max-width:430px;background:#FDFAF6;border-radius:24px 24px 0 0;padding:10px 22px 28px;animation:dsheet .28s ease both">
+      <div style="width:40px;height:4px;border-radius:4px;background:rgba(35,28,22,.18);margin:0 auto 20px"></div>
+      <div style="font:400 30px/1.1 'Instrument Serif',Georgia,serif;color:#231C16;text-wrap:pretty">{{ inviteTitle }}</div>
+      <p style="margin:10px 0 0;font:500 14.5px/1.55 Manrope,sans-serif;color:#6C5F53;text-wrap:pretty">{{ inviteBody }}</p>
+      <div style="margin-top:14px;display:inline-flex;padding:8px 12px;border-radius:8px;background:#F3E9DC;font:600 13px/1 Manrope,sans-serif;color:#6C5F53">{{ inviteSummary }}</div>
+      <button onClick="{{ inviteCreate }}" style="width:100%;margin-top:20px;padding:17px;border-radius:15px;background:#C0522C;color:#FFF7F0;font:700 16px/1 Manrope,sans-serif">Create Account</button>
+      <button onClick="{{ inviteLater }}" style="width:100%;margin-top:8px;padding:15px;font:700 15px/1 Manrope,sans-serif;color:#6C5F53">Maybe Later</button>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:900},&quot;jumpTo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;section&quot;:&quot;Prototype&quot;,&quot;default&quot;:&quot;Live prototype&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;Live prototype&quot;,&quot;1 · Welcome&quot;,&quot;2 · Guest ingredient entry&quot;,&quot;3 · Protein category open&quot;,&quot;4 · Protein selected&quot;,&quot;5 · Vegetable category open&quot;,&quot;6 · Vegetables selected&quot;,&quot;7 · Grains &amp; starches open&quot;,&quot;8 · Grain selected&quot;,&quot;9 · Ingredient search&quot;,&quot;10 · Search result added&quot;,&quot;11 · Basic staples checklist&quot;,&quot;12 · Staples confirmed&quot;,&quot;13 · Additional seasonings&quot;,&quot;14 · Review ingredients&quot;,&quot;15 · Cooking time&quot;,&quot;16 · Dinner recommendations&quot;,&quot;17 · Missing ingredients overlay&quot;,&quot;18 · Recipe overview&quot;,&quot;19 · Dinner selected&quot;,&quot;20 · Save invitation&quot;,&quot;21 · Create account&quot;,&quot;22 · Account created, review&quot;,&quot;23 · Selections saved&quot;,&quot;24 · Returning-user review&quot;,&quot;25 · Update saved selections&quot;,&quot;26 · New recommendations&quot;,&quot;27 · Recipe saved&quot;,&quot;28 · Saved recipes&quot;]}}">
+const CATS = [
+  { name: 'Proteins', items: ['Chicken', 'Ground Beef', 'Eggs', 'Black Beans', 'Tofu', 'Shrimp', 'Salmon', 'Pork Chops'] },
+  { name: 'Vegetables', items: ['Broccoli', 'Carrots', 'Bell Peppers', 'Onion', 'Garlic', 'Spinach', 'Tomatoes', 'Mushrooms', 'Zucchini', 'Corn'] },
+  { name: 'Grains & Starches', items: ['Rice', 'Pasta', 'Potatoes', 'Tortillas', 'Bread', 'Noodles', 'Quinoa'] },
+  { name: 'Dairy', items: ['Cheese', 'Parmesan', 'Butter', 'Milk', 'Sour Cream', 'Yogurt'] },
+  { name: 'Fruits', items: ['Lemon', 'Lime', 'Avocado', 'Apples'] },
+  { name: 'Pantry & Sauces', items: ['Soy Sauce', 'Honey', 'Salsa', 'Canned Tomatoes', 'Coconut Milk', 'Broth', 'Peanut Butter'] }
+];
+const EXTRAS = { Ginger: 'Vegetables', Cilantro: 'Vegetables', Scallions: 'Vegetables', Kale: 'Vegetables', Cabbage: 'Vegetables', Cauliflower: 'Vegetables', 'Green Beans': 'Vegetables', 'Frozen Peas': 'Vegetables', 'Sweet Potatoes': 'Grains & Starches', Couscous: 'Grains & Starches', Chickpeas: 'Proteins', Lentils: 'Proteins', Bacon: 'Proteins', 'Ground Turkey': 'Proteins', Tuna: 'Proteins', 'Cream Cheese': 'Dairy', Oranges: 'Fruits', Bananas: 'Fruits', 'Hot Sauce': 'Pantry & Sauces', Vinegar: 'Pantry & Sauces', 'Garlic Bread': 'Grains & Starches' };
+const CAT_OF = {};
+CATS.forEach(c => c.items.forEach(n => { CAT_OF[n] = c.name; }));
+Object.assign(CAT_OF, EXTRAS);
+const ALL = Object.keys(CAT_OF).sort();
+const STAPLES = [{ n: 'Salt', note: 'Table or kosher' }, { n: 'Pepper', note: 'Ground black pepper' }, { n: 'Cooking Oil', note: 'Olive, canola, or vegetable' }];
+const STAPLE_SET = new Set(STAPLES.map(x => x.n));
+const SEASONINGS = ['Garlic Powder', 'Onion Powder', 'Paprika', 'Chili Powder', 'Cumin', 'Dried Herbs', 'Oregano', 'Chili Flakes', 'Curry Powder', 'Italian Seasoning', 'Cinnamon', 'Ground Ginger'];
+const SEASON_SET = new Set(SEASONINGS);
+const TIMES = [{ v: 15, l: '15 min', d: 'Something quick' }, { v: 30, l: '30 min', d: 'A normal weeknight' }, { v: 45, l: '45 min', d: 'Room to take it slow' }, { v: 60, l: '60+ min', d: 'No rush tonight' }];
+const tl = t => (t >= 60 ? '60+ min' : t + ' min');
+const T = { warm: ['#F2DFC6', '#EDD6B8'], green: ['#E2EBDD', '#D8E4D2'], red: ['#F3DBD2', '#EED0C4'], gold: ['#F4E6C4', '#EFDDB4'] };
+const I = (k, q, a) => Object.assign({ k, q }, a || {});
+const GARLIC = I('Garlic', '3 cloves garlic, minced', { s: 'Garlic Powder', sq: '1 tsp garlic powder' });
+const SOY = I('Soy Sauce', '3 tbsp soy sauce', { o: 'Season with an extra pinch of salt and a squeeze of lemon if you have one.' });
+const OIL = I('Cooking Oil', '2 tbsp cooking oil');
+const SALT = I('Salt', 'Salt, to taste');
+const PEP = I('Pepper', 'Pepper, to taste');
+
+const RECIPES = [
+  { id: 'r1', name: 'Garlic Chicken & Broccoli Rice Bowl', time: 20, photo: 'chicken rice bowl', tint: T.green, blurb: 'Everything cooks in one pan while the rice steams.',
+    ing: [I('Chicken', '1 lb chicken breast, cubed'), I('Broccoli', '1 head broccoli, cut into florets'), I('Rice', '1 cup rice'), GARLIC, I('Soy Sauce', '2 tbsp soy sauce', { o: 'Season with an extra pinch of salt at the end.' }), I('Honey', '1 tbsp honey', { o: 'The sauce is less glossy but still tastes great.' }), I('Cooking Oil', '1 tbsp cooking oil'), SALT],
+    steps: ['Start the rice: 1 cup rice, 2 cups water and a pinch of salt. Cover and simmer on low for 15 minutes.', 'Heat the oil in a large pan over medium-high. Add the chicken in one layer and cook 5 minutes, turning once, until browned.', 'Add the broccoli, garlic and 2 tbsp water. Cover and steam 3 minutes until bright green.', 'Stir in the soy sauce and honey and toss for 1 minute until glossy.', 'Spoon over the rice and season with salt to taste.'] },
+  { id: 'r2', name: 'Chicken Fried Rice', time: 25, photo: 'chicken fried rice', tint: T.gold, blurb: 'Best with leftover rice. Dry grains fry better.',
+    ing: [I('Chicken', '3/4 lb chicken, diced'), I('Rice', '3 cups cooked rice'), I('Eggs', '2 eggs', { o: 'Skip the egg and add a little extra chicken.' }), I('Carrots', '1 cup diced carrots', { s: 'Broccoli', sq: '1 cup chopped broccoli' }), I('Onion', '1/2 onion, diced', { s: 'Onion Powder', sq: '1/2 tsp onion powder' }), SOY, OIL],
+    steps: ['Heat 1 tbsp oil in a large pan over high heat. Cook the chicken 4–5 minutes until golden, then move it to a plate.', 'Add the rest of the oil, the onion and the carrots. Cook 3 minutes until softened.', 'Push the vegetables aside, crack in the eggs and scramble until just set.', 'Add the rice and chicken. Press into the pan and fry 3 minutes without stirring much.', 'Season with soy sauce, toss well and serve hot.'] },
+  { id: 'r3', name: 'Sheet-Pan Chicken, Potatoes & Broccoli', time: 40, photo: 'sheet-pan chicken', tint: T.warm, blurb: 'Hands-off roasting. One pan to wash.',
+    ing: [I('Chicken', '4 chicken thighs'), I('Potatoes', '1 lb potatoes, cubed'), I('Broccoli', '1 head broccoli, florets'), I('Paprika', '1 tsp paprika', { o: 'Still tasty with just salt and pepper.' }), I('Garlic Powder', '1 tsp garlic powder', { s: 'Garlic', sq: '3 cloves garlic, minced' }), I('Cooking Oil', '3 tbsp cooking oil'), SALT, PEP],
+    steps: ['Heat the oven to 425°F.', 'Toss the potatoes with half the oil, salt, pepper, paprika and garlic powder. Roast 15 minutes.', 'Add the chicken and broccoli to the pan, drizzle with the rest of the oil and season.', 'Roast 20 more minutes, until the chicken reaches 165°F and the potatoes are crisp.'] },
+  { id: 'r4', name: 'Chicken Burrito Bowl', time: 30, photo: 'burrito bowl', tint: T.red, blurb: 'All the burrito, none of the folding.',
+    ing: [I('Chicken', '1 lb chicken breast'), I('Rice', '1 cup rice'), I('Black Beans', '1 can black beans, drained', { o: 'The bowl is lighter but still filling.' }), I('Salsa', '1/2 cup salsa', { s: 'Tomatoes', sq: '1 diced tomato with a pinch of salt' }), I('Cheese', '1/2 cup shredded cheese', { o: "It's just a topping. Leave it off." }), I('Lime', '1 lime', { s: 'Lemon', sq: '1/2 lemon' }), I('Chili Powder', '2 tsp chili powder', { s: 'Paprika', sq: '2 tsp paprika' }), OIL],
+    steps: ['Cook the rice.', 'Season the chicken with chili powder and salt. Cook in oil 5–6 minutes per side, rest, then slice.', 'Warm the beans in a small pot with a pinch of salt.', 'Build bowls: rice, beans, chicken, salsa and cheese. Finish with a squeeze of lime.'] },
+  { id: 'r5', name: 'Crispy Tofu & Broccoli Stir-Fry', time: 25, photo: 'tofu stir-fry', tint: T.green, blurb: 'Crisp tofu and crunchy vegetables over rice.',
+    ing: [I('Tofu', '1 block firm tofu, cubed'), I('Broccoli', '1 head broccoli, florets'), I('Bell Peppers', '1 bell pepper, sliced', { o: 'Use more broccoli instead.' }), I('Rice', '1 cup rice'), GARLIC, SOY, OIL],
+    steps: ['Cook the rice.', 'Pat the tofu dry. Fry in oil over medium-high for 8 minutes, turning, until crisp on all sides.', 'Add the broccoli, bell pepper and garlic with 2 tbsp water. Cover for 3 minutes.', 'Add the soy sauce and toss 1 minute. Serve over rice.'] },
+  { id: 'r6', name: 'Pasta Primavera', time: 25, photo: 'pasta primavera', tint: T.gold, blurb: 'Bright vegetables, buttery pasta, ready in one pot.',
+    ing: [I('Pasta', '12 oz pasta'), I('Broccoli', '2 cups broccoli florets'), I('Bell Peppers', '1 bell pepper, sliced', { s: 'Carrots', sq: '1 carrot, thinly sliced' }), GARLIC, I('Parmesan', '1/3 cup grated parmesan', { s: 'Cheese', sq: '1/3 cup any shredded cheese' }), I('Butter', '2 tbsp butter', { s: 'Cooking Oil', sq: '2 tbsp cooking oil' }), SALT, PEP],
+    steps: ['Boil the pasta in salted water, adding the broccoli for the last 3 minutes. Save 1/2 cup pasta water, then drain.', 'Melt the butter in the pot. Add the garlic and bell pepper and cook 3 minutes.', 'Return the pasta and broccoli, add the parmesan and a splash of pasta water. Toss until glossy.', 'Season with salt and pepper.'] },
+  { id: 'r7', name: 'Cheesy Bean Quesadillas', time: 15, photo: 'quesadillas', tint: T.gold, blurb: 'Crisp outside, melty inside, one pan.',
+    ing: [I('Tortillas', '4 large tortillas'), I('Black Beans', '1 can black beans, drained'), I('Cheese', '2 cups shredded cheese'), I('Onion', '1/2 onion, diced', { o: "Skip it. The beans and cheese carry the flavor." }), I('Salsa', '1/2 cup salsa, for dipping', { o: 'Serve with sour cream, or plain.' }), I('Cooking Oil', '1 tsp cooking oil')],
+    steps: ['Mash half the beans with a fork and mix in the rest.', 'Cook the onion in the oil for 3 minutes, then stir into the beans.', 'Fill half of each tortilla with beans and cheese, then fold.', 'Cook in a dry pan 2–3 minutes per side until crisp and melted. Cut into wedges.'] },
+  { id: 'r8', name: 'Veggie Egg Fried Rice', time: 15, photo: 'egg fried rice', tint: T.warm, blurb: 'Fast, salty and endlessly flexible.',
+    ing: [I('Rice', '3 cups cooked rice'), I('Eggs', '3 eggs'), I('Carrots', '1 carrot, diced', { s: 'Broccoli', sq: '1 cup chopped broccoli' }), I('Bell Peppers', '1 bell pepper, diced', { o: 'Any chopped vegetable works.' }), SOY, OIL],
+    steps: ['Heat the oil over high heat. Cook the carrots and pepper for 3 minutes.', 'Push them aside and scramble the eggs until just set.', 'Add the rice. Press it into the pan and fry 3 minutes.', 'Season with soy sauce and serve.'] },
+  { id: 'r9', name: 'Beef Taco Rice Skillet', time: 30, photo: 'taco skillet', tint: T.red, blurb: 'Taco night in a single skillet.',
+    ing: [I('Ground Beef', '1 lb ground beef'), I('Rice', '1 cup rice'), I('Canned Tomatoes', '1 can diced tomatoes', { s: 'Tomatoes', sq: '2 fresh tomatoes, chopped' }), I('Bell Peppers', '1 bell pepper, diced', { o: 'Leave it out.' }), I('Cheese', '1 cup shredded cheese', { o: 'Optional topping.' }), I('Chili Powder', '2 tsp chili powder', { s: 'Paprika', sq: '2 tsp paprika' }), I('Onion', '1 onion, diced', { s: 'Onion Powder', sq: '1 tsp onion powder' })],
+    steps: ['Brown the beef with the onion over medium-high for 6 minutes. Drain the fat.', 'Stir in the chili powder, tomatoes, rice and 1 1/2 cups water. Bring to a simmer.', 'Cover and cook on low for 18 minutes, until the rice is tender.', 'Stir in the bell pepper, top with cheese and cover 2 minutes to melt.'] },
+  { id: 'r10', name: 'Lemon Garlic Shrimp Pasta', time: 20, photo: 'shrimp pasta', tint: T.red, blurb: 'Most of the time is just waiting for water to boil.',
+    ing: [I('Shrimp', '1 lb shrimp, peeled'), I('Pasta', '12 oz spaghetti'), GARLIC, I('Lemon', '1 lemon', { o: 'Finish with a splash of pasta water instead.' }), I('Butter', '3 tbsp butter', { s: 'Cooking Oil', sq: '3 tbsp cooking oil' }), I('Chili Flakes', '1/2 tsp chili flakes', { o: 'Skip it for no heat.' })],
+    steps: ['Boil the pasta in salted water. Save 1/2 cup pasta water, then drain.', 'Melt the butter, then add the garlic and chili flakes for 1 minute.', 'Add the shrimp and cook 2 minutes per side until pink.', 'Toss with the pasta, lemon juice and a splash of pasta water.'] },
+  { id: 'r11', name: 'Crispy Potato & Egg Hash', time: 30, photo: 'potato hash', tint: T.warm, blurb: 'Breakfast-for-dinner, crispy edges included.',
+    ing: [I('Potatoes', '1 1/2 lb potatoes, diced'), I('Eggs', '4 eggs'), I('Onion', '1 onion, diced', { s: 'Onion Powder', sq: '1 tsp onion powder' }), I('Bell Peppers', '1 bell pepper, diced', { o: 'Leave it out.' }), I('Paprika', '1 tsp paprika', { o: 'Fine without it.' }), OIL, SALT, PEP],
+    steps: ['Cook the potatoes in oil over medium-high, covered, for 10 minutes, stirring now and then.', 'Uncover, add the onion, pepper and paprika. Cook 8 minutes until crisp.', 'Make 4 wells, crack in the eggs, cover and cook 5 minutes until the whites set.', 'Season with salt and pepper.'] }
+];
+
+const SEL = { bg: '#231C16', fg: '#FDFAF6', bd: '#231C16' };
+const UNSEL = { bg: '#FFFFFF', fg: '#4A4038', bd: 'rgba(35,28,22,.14)' };
+const chip = a => (a ? SEL : UNSEL);
+const BASE = { screen: 'welcome', hist: [], openCat: null, selected: [], lastAdded: null, query: '', staples: [], seasonings: [], seasonOpen: false, seasonQuery: '', time: 30, resultsMode: 'new', recipeId: null, sheet: null, invite: null, signedIn: false, user: { name: '', email: '' }, form: { name: '', email: '', password: '' }, authMode: 'signup', saved: null, favs: [], toast: null, pendingFav: null };
+const DEMO_SAVED = { selected: ['Chicken', 'Broccoli', 'Rice', 'Garlic'], staples: ['Salt', 'Pepper', 'Cooking Oil'], seasonings: ['Garlic Powder', 'Paprika'], time: 30 };
+
+class Component extends DCLogic {
+  state = { ...BASE };
+
+  componentDidMount() { this.applyJump(this.props.jumpTo); }
+  componentDidUpdate(p) { if (p.jumpTo !== this.props.jumpTo) this.applyJump(this.props.jumpTo); }
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  top() { try { window.scrollTo(0, 0); } catch (e) {} }
+  go(screen, extra) { this.top(); this.setState(s => ({ screen, hist: [...s.hist, s.screen], sheet: null, invite: null, query: '', ...(extra || {}) })); }
+  back() { this.top(); this.setState(s => { const h = [...s.hist]; const prev = h.pop() || 'welcome'; return { screen: prev, hist: h, sheet: null, invite: null, query: '' }; }); }
+  home() { this.top(); this.setState({ screen: 'welcome', hist: [], sheet: null, invite: null, query: '' }); }
+  toast(msg, action) { clearTimeout(this._t); this.setState({ toast: { msg, action } }); this._t = setTimeout(() => this.setState({ toast: null }), 3200); }
+  haveOf(s) { return new Set([...s.selected, ...s.staples, ...s.seasonings]); }
+  loadSaved(extra, screen) { const sv = this.state.saved || DEMO_SAVED; this.go(screen, { selected: [...sv.selected], staples: [...sv.staples], seasonings: [...sv.seasonings], time: sv.time, ...(extra || {}) }); }
+
+  matches(s) {
+    const have = this.haveOf(s);
+    const lim = s.time >= 60 ? 999 : s.time;
+    return RECIPES.map(r => {
+      const core = r.ing.filter(i => !STAPLE_SET.has(i.k) && !SEASON_SET.has(i.k));
+      const coreHave = core.filter(i => have.has(i.k)).length;
+      return { r, hv: r.ing.filter(i => have.has(i.k)), ms: r.ing.filter(i => !have.has(i.k)), coreHave, fits: r.time <= lim };
+    }).filter(x => x.coreHave >= 2)
+      .sort((a, b) => (b.fits - a.fits) || (a.ms.length - b.ms.length) || (b.coreHave - a.coreHave) || (a.r.time - b.r.time))
+      .slice(0, 3);
+  }
+
+  info(i, have) {
+    if (i.s) {
+      const ok = have.has(i.s);
+      return { kind: 'Swap', text: ok ? 'Use ' + i.sq + ' instead. You have it.' : 'Use ' + i.sq + ' instead.', kindBg: '#E7F0E8', kindFg: '#3E6B4F' };
+    }
+    if (i.o) return { kind: 'Skip it', text: i.o, kindBg: '#F7E3CC', kindFg: '#9A5A2A' };
+    return { kind: 'Need it', text: 'Pick this up before you start. There\u2019s no good swap.', kindBg: '#F3DBD2', kindFg: '#A0401F' };
+  }
+
+  toggleIng(n, fromSearch) {
+    const on = this.state.selected.includes(n);
+    this.setState(s => ({ selected: on ? s.selected.filter(x => x !== n) : [...s.selected, n], lastAdded: on ? s.lastAdded : n }));
+    if (!on && fromSearch) this.toast(n + ' added to your ingredients');
+  }
+
+  groups(sel, staples, seasonings, removable) {
+    const out = [];
+    CATS.forEach(c => {
+      const items = sel.filter(n => (CAT_OF[n] || 'Pantry & Sauces') === c.name);
+      if (items.length) out.push({ label: c.name, items: items.map(n => ({ name: n, onRemove: () => this.setState(s => ({ selected: s.selected.filter(x => x !== n) })) })) });
+    });
+    if (staples.length) out.push({ label: 'Basics', items: staples.map(n => ({ name: n, onRemove: () => this.setState(s => ({ staples: s.staples.filter(x => x !== n) })) })) });
+    if (seasonings.length) out.push({ label: 'Seasonings', items: seasonings.map(n => ({ name: n, onRemove: () => this.setState(s => ({ seasonings: s.seasonings.filter(x => x !== n) })) })) });
+    return out;
+  }
+
+  submitAuth() {
+    const s = this.state, f = s.form;
+    const name = f.name.trim() || 'Sam', email = f.email.trim() || 'sam@example.com';
+    this.top();
+    if (s.authMode === 'signup') {
+      const hasSel = s.selected.length > 0;
+      const favs = s.pendingFav && !s.favs.includes(s.pendingFav) ? [...s.favs, s.pendingFav] : s.favs;
+      this.setState({ signedIn: true, user: { name, email }, favs, pendingFav: null, screen: hasSel ? 'acctReview' : 'welcome', hist: hasSel ? [...s.hist, 'auth'] : [] });
+      if (!hasSel) this.toast('Account created');
+    } else {
+      const sv = s.saved || DEMO_SAVED;
+      this.setState({ signedIn: true, user: { name: f.name.trim() || 'Sam', email }, saved: sv, selected: [...sv.selected], staples: [...sv.staples], seasonings: [...sv.seasonings], time: sv.time, screen: 'returning', hist: ['welcome'] });
+    }
+  }
+
+  applyJump(label) {
+    const n = parseInt(label, 10);
+    if (!n) return;
+    clearTimeout(this._t);
+    const P = ['Chicken', 'Broccoli', 'Rice', 'Garlic'], ST = ['Salt', 'Pepper', 'Cooking Oil'], SE = ['Garlic Powder', 'Paprika'];
+    const U = { name: 'Sam', email: 'sam@example.com' };
+    const full = { selected: P, staples: ST, seasonings: SE, time: 30 };
+    const UPD = ['Broccoli', 'Rice', 'Garlic', 'Tofu', 'Bell Peppers', 'Pasta'];
+    const flow = ['welcome', 'ingredients', 'staples', 'review', 'time'];
+    const m1 = this.matches({ ...BASE, ...full });
+    const r0 = m1[0] ? m1[0].r.id : 'r1';
+    const rMiss = (m1.find(x => x.ms.length) || m1[0] || { r: { id: 'r1' } }).r.id;
+    const signed = { signedIn: true, user: U, saved: { ...full } };
+    const m2 = this.matches({ ...BASE, ...full, selected: UPD });
+    const rU = m2[0] ? m2[0].r.id : 'r5';
+    const ing = { screen: 'ingredients', hist: ['welcome'] };
+    const M = {
+      1: { screen: 'welcome' },
+      2: { ...ing },
+      3: { ...ing, openCat: 'Proteins' },
+      4: { ...ing, openCat: 'Proteins', selected: ['Chicken'], lastAdded: 'Chicken' },
+      5: { ...ing, openCat: 'Vegetables', selected: ['Chicken'] },
+      6: { ...ing, openCat: 'Vegetables', selected: ['Chicken', 'Broccoli'], lastAdded: 'Broccoli' },
+      7: { ...ing, openCat: 'Grains & Starches', selected: ['Chicken', 'Broccoli'] },
+      8: { ...ing, openCat: 'Grains & Starches', selected: ['Chicken', 'Broccoli', 'Rice'], lastAdded: 'Rice' },
+      9: { ...ing, query: 'gar', selected: ['Chicken', 'Broccoli', 'Rice'] },
+      10: { ...ing, query: 'gar', selected: P, lastAdded: 'Garlic', toast: { msg: 'Garlic added to your ingredients' } },
+      11: { screen: 'staples', hist: ['welcome', 'ingredients'], selected: P },
+      12: { screen: 'staples', hist: ['welcome', 'ingredients'], selected: P, staples: ST },
+      13: { screen: 'staples', hist: ['welcome', 'ingredients'], selected: P, staples: ST, seasonOpen: true, seasonings: SE },
+      14: { screen: 'review', hist: ['welcome', 'ingredients', 'staples'], ...full },
+      15: { screen: 'time', hist: ['welcome', 'ingredients', 'staples', 'review'], ...full },
+      16: { screen: 'results', hist: flow, ...full },
+      17: { screen: 'results', hist: flow, ...full, sheet: rMiss },
+      18: { screen: 'recipe', hist: [...flow, 'results'], ...full, recipeId: r0 },
+      19: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0 },
+      20: { screen: 'cooking', hist: [...flow, 'results', 'recipe'], ...full, recipeId: r0, invite: 'save' },
+      21: { screen: 'auth', authMode: 'signup', hist: [...flow, 'results', 'recipe', 'cooking'], ...full, recipeId: r0 },
+      22: { screen: 'acctReview', hist: [], ...full, signedIn: true, user: U },
+      23: { screen: 'savedSel', hist: [], ...full, ...signed },
+      24: { screen: 'returning', hist: ['welcome'], ...full, ...signed },
+      25: { screen: 'update', hist: ['welcome', 'returning'], ...full, ...signed, selected: UPD },
+      26: { screen: 'results', hist: ['welcome', 'returning', 'update'], ...full, selected: UPD, ...signed, saved: { ...full, selected: UPD }, resultsMode: 'updated' },
+      27: { screen: 'recipe', hist: ['welcome', 'returning', 'update', 'results'], ...full, selected: UPD, ...signed, recipeId: rU, favs: [rU], toast: { msg: 'Saved to your Favorites', action: 'favs' } },
+      28: { screen: 'favs', hist: ['welcome'], ...full, ...signed, favs: [rU, 'r1', 'r7'] }
+    };
+    if (M[n]) { this.top(); this.setState({ ...BASE, ...M[n] }); }
+  }
+
+  renderVals() {
+    const s = this.state, scr = s.screen;
+    const have = this.haveOf(s);
+    const selSet = new Set(s.selected);
+    const total = s.selected.length + s.staples.length + s.seasonings.length;
+    const isEditor = scr === 'ingredients' || scr === 'update';
+    const q = (s.query || '').trim().toLowerCase();
+    const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+
+    const v = {
+      sWelcome: scr === 'welcome', sEditor: isEditor, sStaples: scr === 'staples', sReview: scr === 'review', sTime: scr === 'time',
+      sResults: scr === 'results', sRecipe: scr === 'recipe', sCooking: scr === 'cooking', sAuth: scr === 'auth', sAcct: scr === 'acctReview',
+      sSavedSel: scr === 'savedSel', sReturning: scr === 'returning', sFavs: scr === 'favs', sProfile: scr === 'profile',
+      isGuest: !s.signedIn, isSigned: s.signedIn,
+      userName: s.user.name || 'Sam', userEmail: s.user.email, userInitial: (s.user.name || 'S').charAt(0).toUpperCase(),
+      back: () => this.back(),
+      stepLabel: { ingredients: 'Step 1 of 4', staples: 'Step 2 of 4', review: 'Step 3 of 4', time: 'Step 4 of 4' }[scr] || '',
+      timeLabel: tl(s.time), totalCount: total,
+      howSteps: [{ n: 1, t: 'Add your ingredients', d: 'Browse categories or search' }, { n: 2, t: 'Set your cooking time', d: '15 minutes to an hour or more' }, { n: 3, t: 'Pick from three dinners', d: 'With swaps for anything missing' }]
+    };
+
+    // Editor
+    v.editorTitle = scr === 'update' ? 'Update your ingredients' : 'What ingredients do you have?';
+    v.editorSub = scr === 'update' ? "Add what's new and remove what's gone. Your basics and seasonings stay saved." : 'Open a category or search. Add anything you could cook with tonight.';
+    v.query = s.query || '';
+    v.onQuery = e => this.setState({ query: e.target.value });
+    v.clearQuery = () => this.setState({ query: '' });
+    v.hasQuery = !!q; v.noQuery = !q;
+    v.hasSelected = s.selected.length > 0; v.noSelected = !s.selected.length;
+    v.selCountLabel = s.selected.length + ' selected';
+    v.tray = s.selected.map(n => ({ label: n, bg: n === s.lastAdded ? '#FBE7DA' : '#FFFFFF', bd: n === s.lastAdded ? '#C0522C' : 'rgba(35,28,22,.12)', onRemove: () => this.setState(st => ({ selected: st.selected.filter(x => x !== n) })) }));
+    v.cats = CATS.map(c => {
+      const open = s.openCat === c.name;
+      const count = c.items.filter(n => selSet.has(n)).length;
+      return {
+        name: c.name, hint: c.items.slice(0, 4).join(', ') + '…', open, caret: open ? '−' : '+',
+        hasCount: count > 0, countLabel: count + ' added',
+        onToggle: () => this.setState(st => ({ openCat: st.openCat === c.name ? null : c.name })),
+        items: c.items.map(n => ({ label: n, ...chip(selSet.has(n)), onPick: () => this.toggleIng(n) }))
+      };
+    });
+    const found = q ? ALL.filter(n => n.toLowerCase().includes(q)).sort((a, b) => (b.toLowerCase().startsWith(q) - a.toLowerCase().startsWith(q)) || a.localeCompare(b)).slice(0, 8) : [];
+    v.searchResults = found.map(n => {
+      const on = selSet.has(n);
+      return { name: n, cat: CAT_OF[n], action: on ? 'Added ✓' : '+ Add', pillBg: on ? '#E7F0E8' : '#231C16', pillFg: on ? '#3E6B4F' : '#FDFAF6', onToggle: () => this.toggleIng(n, true) };
+    });
+    v.resultsLabel = found.length ? plural(found.length, 'match') .replace('matchs', 'matches') + ' for “' + s.query.trim() + '”' : 'Search results';
+    v.noResults = !!q && !found.length;
+    v.showEditorTime = scr === 'update';
+    v.timeChips = TIMES.map(t => ({ label: t.l, ...chip(s.time === t.v), onPick: () => this.setState({ time: t.v }) }));
+
+    // Staples
+    const allSt = s.staples.length === STAPLES.length;
+    v.stapleRows = STAPLES.map(x => {
+      const on = s.staples.includes(x.n);
+      return { name: x.n, note: x.note, mark: on ? '✓' : '', boxBg: on ? '#231C16' : '#FFFFFF', boxBd: on ? '#231C16' : 'rgba(35,28,22,.28)', onToggle: () => this.setState(st => ({ staples: on ? st.staples.filter(y => y !== x.n) : [...st.staples, x.n] })) };
+    });
+    v.selectAllLabel = allSt ? 'Clear all' : 'Select all';
+    v.onSelectAll = () => this.setState({ staples: allSt ? [] : STAPLES.map(x => x.n) });
+    v.anyStaple = s.staples.length > 0;
+    v.seasonOpen = s.seasonOpen;
+    v.toggleSeason = () => this.setState(st => ({ seasonOpen: !st.seasonOpen }));
+    v.seasonToggleLabel = s.seasonOpen ? 'Done' : 'Add';
+    v.seasonSubLabel = s.seasonings.length ? 'Optional · ' + s.seasonings.length + ' added' : 'Optional · garlic powder, paprika, dried herbs…';
+    v.seasonQuery = s.seasonQuery || '';
+    v.onSeasonQuery = e => this.setState({ seasonQuery: e.target.value });
+    const sq = (s.seasonQuery || '').trim().toLowerCase();
+    const sList = SEASONINGS.filter(n => !sq || n.toLowerCase().includes(sq));
+    v.seasonChips = sList.map(n => ({ label: n, ...chip(s.seasonings.includes(n)), onPick: () => this.setState(st => ({ seasonings: st.seasonings.includes(n) ? st.seasonings.filter(x => x !== n) : [...st.seasonings, n] })) }));
+    v.noSeasonMatch = !sList.length;
+
+    // Review
+    v.reviewGroups = this.groups(s.selected, s.staples, s.seasonings, true);
+    v.totalLabel = plural(total, 'item') + '.';
+    v.addMore = () => this.go('ingredients');
+
+    // Time
+    v.timeRows = TIMES.map(t => {
+      const on = s.time === t.v;
+      return { label: t.l, desc: t.d, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#231C16' : 'rgba(35,28,22,.12)', dotBd: on ? '#231C16' : 'rgba(35,28,22,.28)', dotBg: on ? '#231C16' : '#FFFFFF', onPick: () => this.setState({ time: t.v }) };
+    });
+    v.timeSummary = 'Cooking with ' + plural(s.selected.length, 'ingredient') + (s.staples.length + s.seasonings.length ? ' + ' + (s.staples.length + s.seasonings.length) + ' basics & seasonings' : '');
+    v.editIngr = () => this.go('review');
+
+    // Results
+    const ms = this.matches(s);
+    const nWord = ['No', 'One', 'Two', 'Three'][ms.length];
+    v.resultsTitle = s.resultsMode === 'updated' ? 'New ideas for your updated ingredients' : nWord + ' dinner' + (ms.length === 1 ? '' : 's') + ' you can make';
+    v.criteria = [tl(s.time) + ' or less', plural(total, 'ingredient')];
+    v.editFromResults = () => (s.signedIn && s.saved ? this.go('update') : this.go('review'));
+    v.options = ms.map(x => {
+      const core = x.r.ing.filter(i => !STAPLE_SET.has(i.k) && !SEASON_SET.has(i.k)).length;
+      return {
+        name: x.r.name, blurb: x.r.blurb, photo: x.r.photo, tintA: x.r.tint[0], tintB: x.r.tint[1], timeLabel: tl(x.r.time) + ' total',
+        haveLabel: 'Uses ' + x.hv.length + ' of your ingredients',
+        hasMissing: x.ms.length > 0, noMissing: !x.ms.length,
+        missingLabel: x.ms.length + ' missing ingredient' + (x.ms.length === 1 ? '' : 's'),
+        onMissing: () => this.setState({ sheet: x.r.id }),
+        onView: () => this.go('recipe', { recipeId: x.r.id })
+      };
+    });
+
+    // Missing sheet
+    const sr = RECIPES.find(r => r.id === s.sheet);
+    v.sheetOpen = !!sr;
+    if (sr) {
+      const miss = sr.ing.filter(i => !have.has(i.k));
+      v.sheetName = sr.name;
+      v.sheetCount = 'Missing ' + plural(miss.length, 'ingredient');
+      v.sheetItems = miss.map(i => ({ q: i.q, ...this.info(i, have) }));
+    }
+    v.closeSheet = () => this.setState({ sheet: null });
+    v.sheetView = () => this.go('recipe', { recipeId: s.sheet });
+
+    // Recipe + cooking
+    const r = RECIPES.find(x => x.id === s.recipeId);
+    if (r) {
+      const miss = r.ing.filter(i => !have.has(i.k));
+      const fav = s.favs.includes(r.id);
+      Object.assign(v, {
+        rName: r.name, rPhoto: r.photo, rTintA: r.tint[0], rTintB: r.tint[1], rBlurb: r.blurb, rTimeLabel: tl(r.time) + ' total', rStepCount: plural(r.steps.length, 'step'),
+        rMeta: [tl(r.time) + ' total', 'Uses ' + (r.ing.length - miss.length) + ' of yours', miss.length ? miss.length + ' to swap or skip' : 'Nothing missing'],
+        rIngCount: r.ing.length + ' total',
+        rIngs: r.ing.map(i => {
+          const ok = have.has(i.k);
+          const inf = ok ? {} : this.info(i, have);
+          return { q: i.q, mark: ok ? '✓' : '!', markBg: ok ? '#E7F0E8' : '#F7E3CC', markFg: ok ? '#3E6B4F' : '#9A5A2A', rowBg: ok ? 'transparent' : '#FDF3E8', hasNote: !ok, kind: inf.kind || '', text: inf.text || '' };
+        }),
+        rSteps: r.steps.map((t, k) => ({ n: k + 1, text: t })),
+        rSwaps: miss.map(i => ({ name: i.k, text: this.info(i, have).text })), hasSwaps: miss.length > 0,
+        starIcon: fav ? '★' : '☆', starBg: fav ? '#C0522C' : 'rgba(253,250,246,.96)', starFg: fav ? '#FFF7F0' : '#231C16',
+        onStar: () => {
+          if (!s.signedIn) { this.setState({ invite: 'recipe' }); return; }
+          this.setState(st => ({ favs: fav ? st.favs.filter(x => x !== r.id) : [...st.favs, r.id] }));
+          this.toast(fav ? 'Removed from Favorites' : 'Saved to your Favorites', fav ? null : 'favs');
+        }
+      });
+    }
+
+    // Invite sheet
+    v.inviteOpen = !!s.invite;
+    v.inviteTitle = s.invite === 'recipe' ? 'Create an account to save recipes' : 'Save your ingredients for next time';
+    v.inviteBody = s.invite === 'recipe' ? "Favorites live in your account, along with your ingredients so you don't have to re-enter them." : "Next time you won't need to re-enter everything. An account keeps your ingredient list and your favorite recipes.";
+    v.inviteSummary = plural(total, 'ingredient') + ' · ' + tl(s.time);
+    v.inviteCreate = () => this.go('auth', { authMode: 'signup', pendingFav: s.invite === 'recipe' ? s.recipeId : null });
+    v.inviteLater = () => (s.invite === 'save' ? this.home() : this.setState({ invite: null }));
+
+    // Auth
+    const up = s.authMode === 'signup';
+    v.isSignup = up;
+    v.authTitle = up ? 'Create your account' : 'Welcome back';
+    v.authSub = up ? "It's free. Your account saves two things:" : 'Sign in to pick up where you left off.';
+    v.fName = s.form.name; v.fEmail = s.form.email; v.fPass = s.form.password;
+    v.onName = e => this.setState({ form: { ...this.state.form, name: e.target.value } });
+    v.onEmail = e => this.setState({ form: { ...this.state.form, email: e.target.value } });
+    v.onPass = e => this.setState({ form: { ...this.state.form, password: e.target.value } });
+    v.switchLabel = up ? 'Already have an account?' : 'New to MakeDo?';
+    v.switchCta = up ? 'Sign in' : 'Create an account';
+    v.switchAuth = () => this.setState({ authMode: up ? 'signin' : 'signup' });
+
+    // Account review / returning
+    v.acctGroups = this.groups(s.selected, s.staples, s.seasonings, false);
+    v.editBeforeSave = () => this.go('update');
+    const sv = s.saved || DEMO_SAVED;
+    v.retGroups = this.groups(sv.selected, sv.staples, sv.seasonings, false);
+    v.savedTimeLabel = tl(sv.time);
+
+    // Favorites / profile
+    v.favList = s.favs.map(id => RECIPES.find(x => x.id === id)).filter(Boolean).map(f => ({ name: f.name, timeLabel: tl(f.time) + ' total', tintA: f.tint[0], tintB: f.tint[1], onOpen: () => this.go('recipe', { recipeId: f.id }) }));
+    v.hasFavs = s.signedIn && v.favList.length > 0;
+    v.noFavs = s.signedIn && !v.favList.length;
+    v.favsGuest = !s.signedIn;
+    v.goSignup = () => this.go('auth', { authMode: 'signup' });
+    v.goSignin = () => this.go('auth', { authMode: 'signin' });
+    v.profSavedLabel = s.saved ? plural(s.saved.selected.length + s.saved.staples.length + s.saved.seasonings.length, 'ingredient') + ' · ' + tl(s.saved.time) : 'None saved yet';
+    v.onProfSaved = () => (s.saved ? this.go('returning') : this.go('ingredients'));
+    v.profFavLabel = plural(s.favs.length, 'recipe') + ' saved';
+    v.signOut = () => { this.top(); this.setState({ signedIn: false, user: { name: '', email: '' }, screen: 'welcome', hist: [] }); };
+
+    // CTA bar
+    let cta = null, cta2 = null;
+    const saveSel = () => ({ saved: { selected: [...s.selected], staples: [...s.staples], seasonings: [...s.seasonings], time: s.time } });
+    switch (scr) {
+      case 'welcome':
+        cta = { l: 'Find Dinner', f: () => (s.signedIn && s.saved ? this.go('returning') : this.go('ingredients')) };
+        if (!s.signedIn) cta2 = { l: 'Sign In', f: () => this.go('auth', { authMode: 'signin' }) };
+        break;
+      case 'ingredients': cta = { l: s.selected.length ? 'Next: basics' : 'Add an ingredient to continue', on: s.selected.length > 0, f: () => this.go('staples') }; break;
+      case 'update': cta = { l: 'Save and Find Dinner', on: s.selected.length > 0, f: () => this.go('results', { ...saveSel(), resultsMode: 'updated' }) }; break;
+      case 'staples': cta = { l: 'Review ingredients', f: () => this.go('review') }; break;
+      case 'review': cta = { l: 'Next: cooking time', on: total > 0, f: () => this.go('time') }; break;
+      case 'time': cta = { l: 'Find Dinner', f: () => this.go('results', { resultsMode: 'new' }) }; break;
+      case 'recipe': cta = { l: 'Make This Tonight', f: () => this.go('cooking') }; break;
+      case 'cooking': cta = { l: "I'm done cooking", f: () => { if (!s.signedIn) this.setState({ invite: 'save' }); else { this.home(); this.toast('Enjoy your dinner'); } } }; break;
+      case 'auth': cta = { l: up ? 'Create Account' : 'Sign In', f: () => this.submitAuth() }; break;
+      case 'acctReview': cta = { l: 'Save Selections', f: () => this.go('savedSel', saveSel()) }; break;
+      case 'savedSel':
+        cta = { l: 'Find Dinner', f: () => this.go('results', { resultsMode: 'new' }) };
+        cta2 = { l: 'Edit Ingredients', f: () => this.go('update') };
+        break;
+      case 'returning':
+        cta = { l: 'Use These Ingredients', f: () => this.loadSaved({ resultsMode: 'new' }, 'results') };
+        cta2 = { l: 'Update', f: () => this.loadSaved({}, 'update') };
+        break;
+    }
+    const on = cta ? cta.on !== false : false;
+    v.hasCta = !!cta;
+    v.ctaLabel = cta ? cta.l : '';
+    v.onCta = () => { if (cta && on) cta.f(); };
+    v.ctaBg = on ? '#C0522C' : '#E6DCD0';
+    v.ctaFg = on ? '#FFF7F0' : '#8A7A6B';
+    v.ctaShadow = on ? '0 6px 18px rgba(192,82,44,.26)' : 'none';
+    v.hasCta2 = !!cta2;
+    v.cta2Label = cta2 ? cta2.l : '';
+    v.onCta2 = () => cta2 && cta2.f();
+
+    // Nav
+    const tab = scr === 'favs' ? 'favs' : scr === 'profile' ? 'profile' : 'home';
+    v.navHomeC = tab === 'home' ? '#C0522C' : '#8A7A6B';
+    v.navFavsC = tab === 'favs' ? '#C0522C' : '#8A7A6B';
+    v.navProfC = tab === 'profile' ? '#C0522C' : '#8A7A6B';
+    v.navHome = () => this.home();
+    v.navFavs = () => { if (scr !== 'favs') this.go('favs'); };
+    v.navProfile = () => { if (scr !== 'profile') this.go('profile'); };
+
+    // Toast
+    v.hasToast = !!s.toast;
+    v.toastMsg = s.toast ? s.toast.msg : '';
+    v.toastHasAction = !!(s.toast && s.toast.action);
+    v.toastAction = () => { this.setState({ toast: null }); this.go('favs'); };
+    v.toastBottom = cta ? 152 : 86;
+    return v;
+  }
+}
+</script>
+</body>
+</html>
