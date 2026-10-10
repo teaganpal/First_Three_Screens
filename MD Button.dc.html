@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ isPrimary }}" hint-placeholder-val="{{ true }}"><button onClick="{{ press }}" style="width:100%;height:52px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;border:0;border-radius:14px;background:#C0522C;color:#FFF7F0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:pointer;transition:transform .12s ease,background .15s ease" style-hover="background:#A9461F" style-active="transform:scale(.98)">{{ label }}<sc-if value="{{ hasChevron }}"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m1 1 6 6-6 6"></path></svg></sc-if></button></sc-if>
+<sc-if value="{{ isCool }}"><button onClick="{{ press }}" style="width:100%;height:52px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;border:0;border-radius:14px;background:#2B6E6A;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(43,110,106,.3);transition:transform .12s ease,background .15s ease" style-hover="background:#225955" style-active="transform:scale(.98)">{{ label }}<sc-if value="{{ hasChevron }}"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m1 1 6 6-6 6"></path></svg></sc-if></button></sc-if>
+<sc-if value="{{ isSecondary }}"><button onClick="{{ press }}" style="width:100%;height:52px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 18px;border:1.5px solid rgba(35,28,22,.18);border-radius:14px;background:#FFFFFF;color:#231C16;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:pointer;transition:transform .12s ease,background .15s ease" style-hover="background:#FBF6EF" style-active="transform:scale(.98)">{{ label }}</button></sc-if>
+<sc-if value="{{ isDestructive }}"><button onClick="{{ press }}" style="width:100%;height:52px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 18px;border:1.5px solid rgba(35,28,22,.16);border-radius:14px;background:#FFFFFF;color:#C4291C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:pointer" style-hover="background:#FBF0EE">{{ label }}</button></sc-if>
+<sc-if value="{{ isGhost }}"><button onClick="{{ press }}" style="width:100%;height:48px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 18px;border:0;border-radius:14px;background:transparent;color:#6C5F53;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:pointer" style-hover="background:rgba(35,28,22,.05)">{{ label }}</button></sc-if>
+<sc-if value="{{ isDisabled }}"><button aria-disabled="true" style="width:100%;height:52px;min-height:44px;display:flex;align-items:center;justify-content:center;padding:0 18px;border:0;border-radius:14px;background:#E6DCD0;color:#6E6259;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;cursor:default">{{ label }}</button></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:80},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Find Dinner&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;primary&quot;,&quot;cool&quot;,&quot;secondary&quot;,&quot;destructive&quot;,&quot;ghost&quot;],&quot;default&quot;:&quot;primary&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;disabled&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;trailing&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;none&quot;,&quot;chevron&quot;],&quot;default&quot;:&quot;none&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onPress&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const v = p.variant || 'primary';
+    const dis = !!p.disabled;
+    return {
+      label: p.label ?? 'Button',
+      isPrimary: !dis && v === 'primary', isCool: !dis && v === 'cool', isSecondary: !dis && v === 'secondary',
+      isDestructive: !dis && v === 'destructive', isGhost: !dis && v === 'ghost', isDisabled: dis,
+      hasChevron: p.trailing === 'chevron',
+      press: () => { if (!dis && p.onPress) p.onPress(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

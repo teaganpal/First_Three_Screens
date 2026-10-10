@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ on }}"><button onClick="{{ press }}" aria-pressed="true" style="width:100%;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border-radius:100px;border:1.5px solid #231C16;background:#231C16;color:#FDFAF6;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:all .16s ease">{{ label }}</button></sc-if>
+<sc-if value="{{ off }}" hint-placeholder-val="{{ true }}"><button onClick="{{ press }}" aria-pressed="false" style="width:100%;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border-radius:100px;border:1.5px solid rgba(35,28,22,.12);background:#FFFFFF;color:#3B322A;font:600 15px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;white-space:nowrap;cursor:pointer;transition:all .16s ease" style-hover="border-color:rgba(35,28,22,.3)">{{ label }}</button></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:160,&quot;height&quot;:60},&quot;label&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Chicken&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;selected&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;onPress&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    return { label: p.label ?? 'Chip', on: !!p.selected, off: !p.selected, press: () => p.onPress && p.onPress() };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div role="progressbar" aria-valuemin="1" aria-valuemax="{{ total }}" aria-valuenow="{{ current }}" style="display:grid;grid-template-columns:repeat({{ total }},minmax(0,1fr));gap:4px">
+  <sc-for list="{{ items }}" as="p" hint-placeholder-count="3">
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div style="height:4px;border-radius:2px;transition:background .2s ease;background:{{ p.bar }}"></div>
+      <span style="font:{{ p.w }} 11px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:{{ p.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:50},&quot;current&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2,&quot;tsType&quot;:&quot;number&quot;},&quot;steps&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const steps = this.props.steps || ['Ingredients', 'Time', 'Review'];
+    const cur = this.props.current ?? 0;
+    return {
+      total: steps.length, current: cur + 1,
+      items: steps.map((l, k) => ({ label: l, bar: k <= cur ? '#C0522C' : 'rgba(35,28,22,.12)', fg: k === cur ? '#231C16' : '#6E6259', w: k === cur ? 600 : 400 }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#FDFAF6;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#231C16;-webkit-font-smoothing:antialiased}
+a{color:#C0522C}a:hover{color:#9C3F20}
+</style></helmet>
+<div style="max-width:960px;margin:0 auto;padding:48px 24px 80px;display:flex;flex-direction:column;gap:48px">
+  <header>
+    <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:#C0522C"></span><span style="font:700 14px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6C5F53">MakeDo</span></div>
+    <h1 style="margin:18px 0 0;font:700 40px/1.1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;letter-spacing:-.01em">Design library</h1>
+    <p style="margin:10px 0 0;max-width:560px;font:400 17px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Tokens and shared components used across the MakeDo prototype. The components below are the same ones the app imports.</p>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Color</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px">
+      <sc-for list="{{ colors }}" as="c" hint-placeholder-count="10">
+        <div style="border:1px solid rgba(35,28,22,.08);border-radius:14px;overflow:hidden;background:#FFFFFF">
+          <div style="height:72px;background:{{ c.hex }}"></div>
+          <div style="padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font:600 15px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">{{ c.name }}</span><span style="font:400 13px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">{{ c.hex }} · {{ c.use }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Type (SF Pro, Dynamic Type sizes)</h2>
+    <div style="background:#FFFFFF;border:1px solid rgba(35,28,22,.08);border-radius:16px;overflow:hidden">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid rgba(35,28,22,.06)"><span style="font:700 34px/1.2 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Large Title</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">34 / Bold</span></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid rgba(35,28,22,.06)"><span style="font:700 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Title 2</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">22 / Bold</span></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid rgba(35,28,22,.06)"><span style="font:600 17px/1.3 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Headline</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">17 / Semibold</span></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid rgba(35,28,22,.06)"><span style="font:400 17px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Body</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">17 / Regular</span></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid rgba(35,28,22,.06)"><span style="font:400 15px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Subheadline</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">15 / Regular</span></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 18px"><span style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">Footnote</span><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">13 / Regular</span></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Buttons · MD Button</h2>
+    <p style="margin:0;font:400 15px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">Primary moves the flow forward. Cool is used only for “View recipe” so it stands apart. 52pt tall, 14pt corners.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">primary</span><dc-import name="MD Button" label="Find Dinner" variant="primary" hint-size="100%,52px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">cool</span><dc-import name="MD Button" label="View recipe" variant="cool" trailing="chevron" hint-size="100%,52px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">secondary</span><dc-import name="MD Button" label="Sign In" variant="secondary" hint-size="100%,52px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">disabled</span><dc-import name="MD Button" label="Add an ingredient to continue" disabled="{{ yes }}" hint-size="100%,52px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">destructive</span><dc-import name="MD Button" label="Sign out" variant="destructive" hint-size="100%,52px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span style="font:400 13px/1 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">ghost</span><dc-import name="MD Button" label="Maybe Later" variant="ghost" hint-size="100%,48px"></dc-import></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Chips · MD Chip</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="5">
+        <dc-import name="MD Chip" label="{{ c.label }}" selected="{{ c.on }}" on-press="{{ c.toggle }}" hint-size="90px,44px"></dc-import>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Search · MD Search</h2>
+      <dc-import name="MD Search" value="{{ q }}" placeholder="Search all ingredients" on-change="{{ onQ }}" hint-size="100%,40px"></dc-import>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Navigation · MD Back</h2>
+      <dc-import name="MD Back" label="Back" hint-size="90px,44px"></dc-import>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Progress · MD Progress</h2>
+      <dc-import name="MD Progress" current="{{ one }}" hint-size="100%,26px"></dc-import>
+      <span style="font:400 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6E6259">Shown on Time and Review only. Not on the home screen.</span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2 style="margin:0;font:600 22px/1.27 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">Spacing &amp; shape</h2>
+    <p style="margin:0;font:400 15px/1.6 -apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;color:#6C5F53">20pt screen margins · 44pt minimum touch targets · cards 14–16pt corners · pills fully rounded · recipe-book tabs 12pt top corners, only the selected tab is filled.</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { sel: ['Chicken', 'Rice'], q: '' };
+  renderVals() {
+    const s = this.state;
+    return {
+      yes: true, one: 1, q: s.q,
+      onQ: e => this.setState({ q: e.target.value }),
+      colors: [
+        { name: 'Terracotta', hex: '#C0522C', use: 'Primary action' },
+        { name: 'Teal', hex: '#2B6E6A', use: 'View recipe' },
+        { name: 'Ink', hex: '#231C16', use: 'Text, selected' },
+        { name: 'Cocoa', hex: '#6C5F53', use: 'Body secondary' },
+        { name: 'Stone', hex: '#6E6259', use: 'Labels' },
+        { name: 'Cream', hex: '#FDFAF6', use: 'Background' },
+        { name: 'Sand', hex: '#FAF1E6', use: 'Grouped fill' },
+        { name: 'Sage', hex: '#3E6B4F', use: 'Have / done' },
+        { name: 'Amber', hex: '#9A5A2A', use: 'Missing / swap' },
+        { name: 'Danger', hex: '#C4291C', use: 'Destructive' }
+      ],
+      chips: ['Chicken', 'Broccoli', 'Rice', 'Garlic', 'Eggs'].map(l => ({ label: l, on: s.sel.includes(l), toggle: () => this.setState(st => ({ sel: st.sel.includes(l) ? st.sel.filter(x => x !== l) : [...st.sel, l] })) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
